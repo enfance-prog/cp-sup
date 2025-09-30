@@ -10,7 +10,7 @@ export default function WelcomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-start gap-4">
           <div className="flex items-center gap-3">
             <Image 
-              src="/logo.jpg" 
+              src="/logo.png" 
               alt="ロゴ" 
               width={40} 
               height={40}
