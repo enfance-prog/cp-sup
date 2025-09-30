@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String               @id
+  clerkId        String               @unique
+  name           String
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  certifications Certification[]
+  trainings      TrainingAttendance[]
+  
+  @@map("users")
+}
+
+model Certification {
+  id              String               @id @default(cuid())
+  certNumber      String               @unique
+  userId          String
+  acquisitionDate DateTime
+  expirationDate  DateTime
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  user            User                 @relation(fields: [userId], references: [id])
+  trainings       TrainingAttendance[]
+  
+  @@map("certifications")
+}
+
+model Training {
+  id          String               @id @default(cuid())
+  name        String
+  category    Category
+  points      Int
+  date        DateTime
+  isOnline    Boolean              @default(false)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  attendances TrainingAttendance[]
+  
+  @@map("trainings")
+}
+
+model TrainingAttendance {
+  id              String        @id @default(cuid())
+  userId          String
+  certificationId String
+  trainingId      String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  certification   Certification @relation(fields: [certificationId], references: [id])
+  training        Training      @relation(fields: [trainingId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+  
+  @@unique([userId, trainingId])
+  @@map("training_attendances")
+}
+
+enum Category {
+  CATEGORY_A
+  CATEGORY_B
+  CATEGORY_C
+}

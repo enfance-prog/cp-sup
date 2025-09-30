@@ -1,102 +1,224 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { FaShieldAlt, FaCalendarCheck, FaChartLine, FaUserCheck } from 'react-icons/fa';
 
-export default function Home() {
+export default function WelcomePage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen flex flex-col">
+      {/* ヘッダー */}
+      <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-primary-600">臨床心理士ポイントマネージャー</h1>
+          <div className="flex gap-4">
+            <Link 
+              href="/sign-in" 
+              className="btn-outline text-sm sm:text-base"
+            >
+              ログイン
+            </Link>
+            <Link 
+              href="/sign-up" 
+              className="btn-primary text-sm sm:text-base"
+            >
+              新規登録
+            </Link>
+          </div>
         </div>
+      </header>
+
+      {/* メインコンテンツ */}
+      <main className="flex-1">
+        {/* ヒーローセクション */}
+        <section className="py-20 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-6 animate-fade-in">
+              資格更新を
+              <span className="text-primary-500">もっと簡単に</span>
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 mb-8 animate-slide-up">
+              臨床心理士の資格更新に必要な研修を一元管理。
+              <br className="hidden sm:block" />
+              資格喪失のリスクを減らし、安心して業務に専念できます。
+            </p>
+            <Link 
+              href="/sign-up" 
+              className="btn-primary text-lg px-8 py-4 inline-block animate-slide-up"
+            >
+              今すぐ始める
+            </Link>
+          </div>
+        </section>
+
+        {/* 機能紹介セクション */}
+        <section className="py-16 px-4 bg-white/50">
+          <div className="max-w-6xl mx-auto">
+            <h3 className="text-3xl font-bold text-center text-gray-800 mb-12">
+              主な機能
+            </h3>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="tool-card text-center">
+                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaCalendarCheck className="text-3xl text-primary-600" />
+                </div>
+                <h4 className="text-xl font-bold mb-2 text-gray-800">研修管理</h4>
+                <p className="text-gray-600">
+                  受講した研修を簡単に登録。オンライン・対面の区別も自動管理。
+                </p>
+              </div>
+
+              <div className="tool-card text-center">
+                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaChartLine className="text-3xl text-primary-600" />
+                </div>
+                <h4 className="text-xl font-bold mb-2 text-gray-800">ポイント集計</h4>
+                <p className="text-gray-600">
+                  取得ポイントをカテゴリー別に自動集計。更新要件の達成状況を確認。
+                </p>
+              </div>
+
+              <div className="tool-card text-center">
+                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaUserCheck className="text-3xl text-primary-600" />
+                </div>
+                <h4 className="text-xl font-bold mb-2 text-gray-800">資格情報</h4>
+                <p className="text-gray-600">
+                  資格番号や取得日、有効期限を一元管理。更新時期を見逃しません。
+                </p>
+              </div>
+
+              <div className="tool-card text-center">
+                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaShieldAlt className="text-3xl text-primary-600" />
+                </div>
+                <h4 className="text-xl font-bold mb-2 text-gray-800">安全性</h4>
+                <p className="text-gray-600">
+                  パスワードレス認証で高いセキュリティ。データは安全に保護されます。
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* セキュリティ説明セクション */}
+        <section className="py-16 px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="tool-card">
+              <div className="flex items-start gap-4">
+                <FaShieldAlt className="text-4xl text-primary-600 flex-shrink-0 mt-1" />
+                <div>
+                  <h3 className="text-2xl font-bold mb-4 text-gray-800">
+                    安全なログイン方法
+                  </h3>
+                  <p className="text-gray-700 leading-relaxed mb-4">
+                    このアプリでは、GoogleやAppleなどの信頼できるアカウントでログインできます。
+                    これらのサービスでは生体認証（指紋認証や顔認証）を使用することで、
+                    パスワードを覚える必要がなく、より安全にアプリを利用できます。
+                  </p>
+                  <p className="text-gray-700 leading-relaxed">
+                    パスワードレス認証により、パスワードの流出リスクがなく、
+                    高い安全性を保ちながら快適にご利用いただけます。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 使い方セクション */}
+        <section className="py-16 px-4 bg-white/50">
+          <div className="max-w-4xl mx-auto">
+            <h3 className="text-3xl font-bold text-center text-gray-800 mb-12">
+              使い方
+            </h3>
+            <div className="space-y-6">
+              <div className="tool-card flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  1
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold mb-2 text-gray-800">アカウント登録</h4>
+                  <p className="text-gray-700">
+                    Google、Apple、またはメールアドレスでアカウントを作成します。
+                  </p>
+                </div>
+              </div>
+
+              <div className="tool-card flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  2
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold mb-2 text-gray-800">資格情報の登録</h4>
+                  <p className="text-gray-700">
+                    臨床心理士番号、お名前、資格取得日を登録します。
+                  </p>
+                </div>
+              </div>
+
+              <div className="tool-card flex items-start gap-4">
+                <div className="w-10 h-10 bg-primary-500 text-white rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                  3
+                </div>
+                <div>
+                  <h4 className="text-xl font-bold mb-2 text-gray-800">研修の記録</h4>
+                  <p className="text-gray-700">
+                    受講した研修を登録し、ポイントを自動集計。更新要件の達成状況を確認できます。
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* CTAセクション */}
+        <section className="py-20 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h3 className="text-3xl font-bold text-gray-800 mb-6">
+              今すぐ始めましょう
+            </h3>
+            <p className="text-lg text-gray-600 mb-8">
+              資格更新の管理を簡単に。無料で今すぐ始められます。
+            </p>
+            <Link 
+              href="/sign-up" 
+              className="btn-primary text-lg px-8 py-4 inline-block"
+            >
+              無料で始める
+            </Link>
+          </div>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* フッター */}
+      <footer className="bg-gray-800 text-white py-8 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* サポートセクション */}
+          <div className="text-center mb-6">
+            <a 
+              href="https://lin.ee/UnZgvAz" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-3 mb-3 hover:opacity-80 transition-opacity"
+            >
+              <div className="w-12 h-12 bg-[#06C755] rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-7 h-7">
+                  <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314"/>
+                </svg>
+              </div>
+              <div className="text-left">
+                <p className="text-sm text-gray-300 font-medium">公式LINEサポート</p>
+                <p className="text-xs text-gray-400">不具合報告・機能追加の要望などを受付中</p>
+              </div>
+            </a>
+
+          </div>
+          
+          {/* コピーライト */}
+          <div className="text-center pt-6 border-t border-gray-700">
+            <p className="text-gray-400 text-sm">
+              © 2025 enfance. All rights reserved.
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   );
