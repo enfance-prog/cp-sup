@@ -119,7 +119,7 @@ export default function WelcomePage() {
                     </span>
                   </div>
                   <p className="text-gray-600 leading-relaxed mb-4">
-                    将来的に、このアプリから直接公式団体へワンクリックで更新申請ができるようになります。
+                    将来的に、このアプリから直接公式団体へワンクリックで更新申請が可能になる事を目指しています。
                   </p>
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
