@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { FaShieldAlt, FaCalendarCheck, FaChartLine, FaUserCheck } from 'react-icons/fa';
 
 export default function WelcomePage() {
@@ -6,18 +7,29 @@ export default function WelcomePage() {
     <div className="min-h-screen flex flex-col">
       {/* ヘッダー */}
       <header className="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary-600">臨床心理士ポイントマネージャー</h1>
-          <div className="flex gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-start gap-4">
+          <div className="flex items-center gap-3">
+            <Image 
+              src="/logo.jpg" 
+              alt="ロゴ" 
+              width={40} 
+              height={40}
+              className="rounded-lg"
+            />
+            <h1 className="text-base sm:text-xl md:text-2xl font-bold text-primary-600 leading-tight">
+              臨床心理士<br className="sm:hidden" />ポイントマネージャー
+            </h1>
+          </div>
+          <div className="flex gap-2 sm:gap-4 flex-shrink-0 pt-1">
             <Link 
               href="/sign-in" 
-              className="btn-outline text-sm sm:text-base"
+              className="btn-outline text-xs sm:text-sm md:text-base px-3 py-1.5 sm:px-4 sm:py-2"
             >
               ログイン
             </Link>
             <Link 
               href="/sign-up" 
-              className="btn-primary text-sm sm:text-base"
+              className="btn-primary text-xs sm:text-sm md:text-base px-3 py-1.5 sm:px-4 sm:py-2"
             >
               新規登録
             </Link>
