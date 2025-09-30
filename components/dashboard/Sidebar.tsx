@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { SignOutButton } from '@clerk/nextjs';
 import { FaHome, FaUser, FaBook, FaSignOutAlt, FaTimes, FaSync } from 'react-icons/fa';
 
@@ -56,8 +57,17 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         <div className="flex h-full flex-col">
           {/* サイドバーヘッダー */}
           <div className="flex h-16 items-center justify-between px-4 bg-primary-700/50 backdrop-blur-sm">
-            <Link href="/dashboard" className="text-xl font-bold truncate">
-              臨床心理士ポータル
+            <Link href="/dashboard" className="flex items-center gap-2">
+              <Image 
+                src="/logo.png" 
+                alt="ロゴ" 
+                width={32} 
+                height={32}
+                className="rounded-lg"
+              />
+              <span className="text-lg font-bold truncate hidden sm:inline">
+                臨床心理士ポータル
+              </span>
             </Link>
             <button
               className="rounded-md p-1 text-white hover:bg-primary-800 focus:outline-none focus:ring-2 focus:ring-white/50 lg:hidden transition-colors"
