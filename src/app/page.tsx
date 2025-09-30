@@ -85,14 +85,52 @@ export default function WelcomePage() {
                 </p>
               </div>
 
-              <div className="tool-card text-center">
-                <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <FaShieldAlt className="text-3xl text-primary-600" />
+              <div className="tool-card text-center opacity-50">
+                <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaShieldAlt className="text-3xl text-gray-500" />
                 </div>
-                <h4 className="text-xl font-bold mb-2 text-gray-800">安全性</h4>
-                <p className="text-gray-600">
-                  パスワードレス認証で高いセキュリティ。データは安全に保護されます。
+                <h4 className="text-xl font-bold mb-2 text-gray-600">オンライン更新手続き</h4>
+                <div className="inline-block bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-medium mb-3">
+                  準備中
+                </div>
+                <p className="text-gray-500 text-sm">
+                  将来的にワンクリックで更新申請が可能になります。現在は公式団体によるシステム整備を待っている状態です。
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* オンライン更新手続き説明セクション */}
+        <section className="py-16 px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="tool-card bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <FaShieldAlt className="text-2xl text-gray-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <h3 className="text-2xl font-bold text-gray-700">
+                      オンライン更新手続き
+                    </h3>
+                    <span className="bg-gray-200 text-gray-600 px-3 py-1 rounded-full text-xs font-medium">
+                      準備中
+                    </span>
+                  </div>
+                  <p className="text-gray-600 leading-relaxed mb-4">
+                    将来的に、このアプリから直接公式団体へワンクリックで更新申請ができるようになります。
+                  </p>
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <h4 className="font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                      <span className="text-blue-600">💡</span>
+                      この機能について
+                    </h4>
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                      公式団体が外部システムとの連携機能（アクセス許可の仕組み）を導入することで、このアプリから直接、更新手続きや期限延長の申請が可能になります。現在は郵送での手続きが必要ですが、公式団体でこの仕組みが整備され次第、オンラインでの簡単な手続きを実現します。
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
