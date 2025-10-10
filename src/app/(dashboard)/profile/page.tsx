@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { FaUser, FaIdCard, FaCalendarAlt, FaSave, FaEdit } from 'react-icons/fa';
+import { FaUser, FaIdCard, FaCalendarAlt, FaSave, FaEdit, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { format } from 'date-fns';
 
 interface CertificationData {
@@ -23,6 +23,7 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     certNumber: '',
@@ -68,6 +69,8 @@ export default function ProfilePage() {
       if (response.ok) {
         await fetchUserData();
         setIsEditing(false);
+        // ヘッダーに名前更新を通知
+        window.dispatchEvent(new Event('profileUpdated'));
       } else {
         alert('保存に失敗しました');
       }
@@ -94,7 +97,27 @@ export default function ProfilePage() {
     return diffDays;
   };
 
+  const maskEmail = (email: string) => {
+    if (!email) return '';
+    const [localPart, domain] = email.split('@');
+    if (!domain) return email;
+    
+    // ローカル部分の最初と最後の文字以外を*に
+    const maskedLocal = localPart.length > 2
+      ? localPart[0] + '*'.repeat(localPart.length - 2) + localPart[localPart.length - 1]
+      : '*'.repeat(localPart.length);
+    
+    // ドメイン部分も同様に
+    const [domainName, tld] = domain.split('.');
+    const maskedDomain = domainName.length > 2
+      ? domainName[0] + '*'.repeat(domainName.length - 2) + domainName[domainName.length - 1]
+      : '*'.repeat(domainName.length);
+    
+    return `${maskedLocal}@${maskedDomain}.${tld}`;
+  };
+
   const daysUntilExpiration = getDaysUntilExpiration();
+  const emailToDisplay = user?.primaryEmailAddress?.emailAddress || '未設定';
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -234,9 +257,22 @@ export default function ProfilePage() {
                   </div>
                   <div className="flex items-center justify-between py-3 border-b border-gray-200">
                     <span className="text-gray-600">メールアドレス</span>
-                    <span className="font-semibold text-gray-800">
-                      {user?.primaryEmailAddress?.emailAddress || '未設定'}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-gray-800">
+                        {showEmail ? emailToDisplay : maskEmail(emailToDisplay)}
+                      </span>
+                      <button
+                        onClick={() => setShowEmail(!showEmail)}
+                        className="text-gray-400 hover:text-primary-600 transition-colors p-1"
+                        title={showEmail ? 'メールアドレスを隠す' : 'メールアドレスを表示'}
+                      >
+                        {showEmail ? (
+                          <FaEyeSlash className="w-4 h-4" />
+                        ) : (
+                          <FaEye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
