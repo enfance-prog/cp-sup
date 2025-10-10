@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import { FaTimes, FaSave } from "react-icons/fa";
+import { useState, useEffect } from 'react';
+import { FaTimes, FaSave } from 'react-icons/fa';
 
 interface Training {
   id: string;
   name: string;
-  category: "CATEGORY_A" | "CATEGORY_B" | "CATEGORY_C";
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C';
   points: number;
   date: string;
   isOnline: boolean;
@@ -19,17 +19,12 @@ interface EditTrainingModalProps {
   onSuccess: () => void;
 }
 
-export default function EditTrainingModal({
-  isOpen,
-  training,
-  onClose,
-  onSuccess,
-}: EditTrainingModalProps) {
+export default function EditTrainingModal({ isOpen, training, onClose, onSuccess }: EditTrainingModalProps) {
   const [formData, setFormData] = useState({
-    name: "",
-    category: "CATEGORY_A" as "CATEGORY_A" | "CATEGORY_B" | "CATEGORY_C",
+    name: '',
+    category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C',
     points: 0,
-    date: "",
+    date: '',
     isOnline: false,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -40,7 +35,7 @@ export default function EditTrainingModal({
         name: training.name,
         category: training.category,
         points: training.points,
-        date: new Date(training.date).toISOString().split("T")[0],
+        date: new Date(training.date).toISOString().split('T')[0],
         isOnline: training.isOnline,
       });
     }
@@ -54,8 +49,8 @@ export default function EditTrainingModal({
 
     try {
       const response = await fetch(`/api/trainings/${training.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
@@ -63,10 +58,10 @@ export default function EditTrainingModal({
         onSuccess();
         onClose();
       } else {
-        alert("更新に失敗しました");
+        alert('更新に失敗しました');
       }
     } catch {
-      alert("更新に失敗しました");
+      alert('更新に失敗しました');
     } finally {
       setSubmitting(false);
     }
@@ -92,9 +87,7 @@ export default function EditTrainingModal({
             <input
               type="text"
               value={formData.name}
-              onChange={(e) =>
-                setFormData({ ...formData, name: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               className="input-field"
               required
             />
@@ -104,9 +97,7 @@ export default function EditTrainingModal({
             <label className="form-label">カテゴリー</label>
             <select
               value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value as any })
-              }
+              onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' })}
               className="select-field"
               required
             >
@@ -123,12 +114,7 @@ export default function EditTrainingModal({
               min="0"
               max="20"
               value={formData.points}
-              onChange={(e) =>
-                setFormData({
-                  ...formData,
-                  points: parseInt(e.target.value) || 0,
-                })
-              }
+              onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) || 0 })}
               className="input-field"
               required
             />
@@ -139,9 +125,7 @@ export default function EditTrainingModal({
             <input
               type="date"
               value={formData.date}
-              onChange={(e) =>
-                setFormData({ ...formData, date: e.target.value })
-              }
+              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               className="input-field"
               required
             />
@@ -152,15 +136,10 @@ export default function EditTrainingModal({
               type="checkbox"
               id="edit-isOnline"
               checked={formData.isOnline}
-              onChange={(e) =>
-                setFormData({ ...formData, isOnline: e.target.checked })
-              }
+              onChange={(e) => setFormData({ ...formData, isOnline: e.target.checked })}
               className="checkbox-field"
             />
-            <label
-              htmlFor="edit-isOnline"
-              className="text-sm text-gray-700 cursor-pointer"
-            >
+            <label htmlFor="edit-isOnline" className="text-sm text-gray-700 cursor-pointer">
               オンライン研修
             </label>
           </div>
@@ -180,7 +159,7 @@ export default function EditTrainingModal({
               disabled={submitting}
             >
               {submitting ? (
-                "更新中..."
+                '更新中...'
               ) : (
                 <>
                   <FaSave />

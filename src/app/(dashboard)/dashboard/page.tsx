@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { FaPlus, FaChartLine, FaWifi, FaUserCircle } from 'react-icons/fa';
 import AddTrainingModal from '@/components/dashboard/AddTrainingModal';
 import EditTrainingModal from '@/components/dashboard/EditTrainingModal';
@@ -39,11 +39,7 @@ export default function DashboardPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState<Training | null>(null);
 
-  useEffect(() => {
-    fetchTrainings();
-  }, []);
-
-  const fetchTrainings = async () => {
+  const fetchTrainings = useCallback(async () => {
     try {
       const response = await fetch('/api/trainings');
       if (response.ok) {
@@ -56,7 +52,11 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchTrainings();
+  }, [fetchTrainings]);
 
   const calculateStats = (trainings: Training[]) => {
     const stats = trainings.reduce(

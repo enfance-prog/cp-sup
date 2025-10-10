@@ -1,23 +1,15 @@
-"use client";
+'use client';
 
-import { useState, useEffect } from "react";
-import {
-  FaPlus,
-  FaFilter,
-  FaSort,
-  FaWifi,
-  FaTrash,
-  FaCalendarAlt,
-  FaEdit,
-} from "react-icons/fa";
-import { format } from "date-fns";
-import AddTrainingModal from "@/components/dashboard/AddTrainingModal";
-import EditTrainingModal from "@/components/dashboard/EditTrainingModal";
+import { useState, useEffect, useCallback } from 'react';
+import { FaPlus, FaFilter, FaSort, FaWifi, FaTrash, FaCalendarAlt, FaEdit } from 'react-icons/fa';
+import { format } from 'date-fns';
+import AddTrainingModal from '@/components/dashboard/AddTrainingModal';
+import EditTrainingModal from '@/components/dashboard/EditTrainingModal';
 
 interface Training {
   id: string;
   name: string;
-  category: "CATEGORY_A" | "CATEGORY_B" | "CATEGORY_C";
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C';
   points: number;
   date: string;
   isOnline: boolean;
@@ -29,15 +21,42 @@ export default function TrainingHistoryPage() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedTraining, setSelectedTraining] = useState<Training | null>(
-    null,
-  );
-
+  const [selectedTraining, setSelectedTraining] = useState<Training | null>(null);
+  
   // フィルター・ソート状態
-  const [categoryFilter, setCategoryFilter] = useState<string>("ALL");
-  const [typeFilter, setTypeFilter] = useState<string>("ALL");
-  const [sortBy, setSortBy] = useState<"date" | "points">("date");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
+  const [typeFilter, setTypeFilter] = useState<string>('ALL');
+  const [sortBy, setSortBy] = useState<'date' | 'points'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  const applyFiltersAndSort = useCallback(() => {
+    let filtered = [...trainings];
+
+    // カテゴリーフィルター
+    if (categoryFilter !== 'ALL') {
+      filtered = filtered.filter((t) => t.category === categoryFilter);
+    }
+
+    // タイプフィルター
+    if (typeFilter === 'ONLINE') {
+      filtered = filtered.filter((t) => t.isOnline);
+    } else if (typeFilter === 'IN_PERSON') {
+      filtered = filtered.filter((t) => !t.isOnline);
+    }
+
+    // ソート
+    filtered.sort((a, b) => {
+      if (sortBy === 'date') {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      } else {
+        return sortOrder === 'asc' ? a.points - b.points : b.points - a.points;
+      }
+    });
+
+    setFilteredTrainings(filtered);
+  }, [trainings, categoryFilter, typeFilter, sortBy, sortOrder]);
 
   useEffect(() => {
     fetchTrainings();
@@ -45,66 +64,37 @@ export default function TrainingHistoryPage() {
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [trainings, categoryFilter, typeFilter, sortBy, sortOrder]);
+  }, [applyFiltersAndSort]);
 
   const fetchTrainings = async () => {
     try {
-      const response = await fetch("/api/trainings");
+      const response = await fetch('/api/trainings');
       if (response.ok) {
         const data = await response.json();
         setTrainings(data);
       }
     } catch (error) {
-      console.error("研修データの取得に失敗しました:", error);
+      console.error('研修データの取得に失敗しました:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const applyFiltersAndSort = () => {
-    let filtered = [...trainings];
-
-    // カテゴリーフィルター
-    if (categoryFilter !== "ALL") {
-      filtered = filtered.filter((t) => t.category === categoryFilter);
-    }
-
-    // タイプフィルター
-    if (typeFilter === "ONLINE") {
-      filtered = filtered.filter((t) => t.isOnline);
-    } else if (typeFilter === "IN_PERSON") {
-      filtered = filtered.filter((t) => !t.isOnline);
-    }
-
-    // ソート
-    filtered.sort((a, b) => {
-      if (sortBy === "date") {
-        const dateA = new Date(a.date).getTime();
-        const dateB = new Date(b.date).getTime();
-        return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
-      } else {
-        return sortOrder === "asc" ? a.points - b.points : b.points - a.points;
-      }
-    });
-
-    setFilteredTrainings(filtered);
-  };
-
   const handleDelete = async (id: string) => {
-    if (!confirm("この研修を削除してもよろしいですか?")) return;
+    if (!confirm('この研修を削除してもよろしいですか?')) return;
 
     try {
       const response = await fetch(`/api/trainings/${id}`, {
-        method: "DELETE",
+        method: 'DELETE',
       });
 
       if (response.ok) {
         fetchTrainings();
       } else {
-        alert("削除に失敗しました");
+        alert('削除に失敗しました');
       }
     } catch {
-      alert("削除に失敗しました");
+      alert('削除に失敗しました');
     }
   };
 
@@ -115,27 +105,19 @@ export default function TrainingHistoryPage() {
 
   const getCategoryLabel = (category: string) => {
     switch (category) {
-      case "CATEGORY_A":
-        return "1群";
-      case "CATEGORY_B":
-        return "2群";
-      case "CATEGORY_C":
-        return "3群";
-      default:
-        return category;
+      case 'CATEGORY_A': return '1群';
+      case 'CATEGORY_B': return '2群';
+      case 'CATEGORY_C': return '3群';
+      default: return category;
     }
   };
 
   const getCategoryColor = (category: string) => {
     switch (category) {
-      case "CATEGORY_A":
-        return "bg-blue-100 text-blue-700 border-blue-200";
-      case "CATEGORY_B":
-        return "bg-purple-100 text-purple-700 border-purple-200";
-      case "CATEGORY_C":
-        return "bg-pink-100 text-pink-700 border-pink-200";
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+      case 'CATEGORY_A': return 'bg-blue-100 text-blue-700 border-blue-200';
+      case 'CATEGORY_B': return 'bg-purple-100 text-purple-700 border-purple-200';
+      case 'CATEGORY_C': return 'bg-pink-100 text-pink-700 border-pink-200';
+      default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
 
@@ -148,7 +130,9 @@ export default function TrainingHistoryPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">研修履歴</h1>
-            <p className="text-gray-600">受講した研修の一覧を確認できます</p>
+            <p className="text-gray-600">
+              受講した研修の一覧を確認できます
+            </p>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
@@ -202,7 +186,7 @@ export default function TrainingHistoryPage() {
             <label className="form-label text-xs">並び替え</label>
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as "date" | "points")}
+              onChange={(e) => setSortBy(e.target.value as 'date' | 'points')}
               className="select-field text-sm"
             >
               <option value="date">受講日</option>
@@ -215,7 +199,7 @@ export default function TrainingHistoryPage() {
             <label className="form-label text-xs">順序</label>
             <select
               value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value as "asc" | "desc")}
+              onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
               className="select-field text-sm"
             >
               <option value="desc">降順</option>
@@ -246,9 +230,7 @@ export default function TrainingHistoryPage() {
 
         {loading ? (
           <div className="text-center py-12">
-            <div className="animate-pulse-gentle text-gray-500">
-              読み込み中...
-            </div>
+            <div className="animate-pulse-gentle text-gray-500">読み込み中...</div>
           </div>
         ) : filteredTrainings.length > 0 ? (
           <div className="space-y-3">
@@ -271,9 +253,7 @@ export default function TrainingHistoryPage() {
                       )}
                     </div>
                     <div className="flex items-center gap-4 text-sm flex-wrap">
-                      <span
-                        className={`px-3 py-1.5 rounded-lg font-semibold border ${getCategoryColor(training.category)}`}
-                      >
+                      <span className={`px-3 py-1.5 rounded-lg font-semibold border ${getCategoryColor(training.category)}`}>
                         {getCategoryLabel(training.category)}
                       </span>
                       <span className="flex items-center gap-1 font-bold text-primary-600 text-base">
@@ -281,7 +261,7 @@ export default function TrainingHistoryPage() {
                         {training.points}pt
                       </span>
                       <span className="text-gray-600">
-                        {format(new Date(training.date), "yyyy年M月d日")}
+                        {format(new Date(training.date), 'yyyy年M月d日')}
                       </span>
                     </div>
                   </div>
@@ -309,14 +289,12 @@ export default function TrainingHistoryPage() {
           <div className="text-center py-12 text-gray-500">
             {trainings.length === 0 ? (
               <>
-                まだ研修が登録されていません。
-                <br />
+                まだ研修が登録されていません。<br />
                 「研修を追加」ボタンから登録してください。
               </>
             ) : (
               <>
-                フィルター条件に一致する研修がありません。
-                <br />
+                フィルター条件に一致する研修がありません。<br />
                 フィルターを変更してください。
               </>
             )}
@@ -325,7 +303,7 @@ export default function TrainingHistoryPage() {
       </div>
 
       {/* 研修追加モーダル */}
-      <AddTrainingModal
+      <AddTrainingModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={fetchTrainings}
