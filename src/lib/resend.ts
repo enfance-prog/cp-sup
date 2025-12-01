@@ -1,6 +1,7 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// ビルド時のエラーを回避するため、APIキーが存在しない場合はダミー値を使用
+const resend = new Resend(process.env.RESEND_API_KEY || 'dummy_key_for_build');
 
 interface ReminderEmailParams {
   to: string;

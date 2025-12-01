@@ -4,18 +4,19 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
   id               String               @id
   clerkId          String               @unique
   name             String
+  email            String?
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
   certifications   Certification[]
   trainings        TrainingAttendance[]
   plannedTrainings PlannedTraining[]
+  googleToken      GoogleToken?
 
   @@map("users")
 }
@@ -83,6 +84,11 @@ model PlannedTraining {
   remindPayment       Boolean   @default(true)
   remindTraining      Boolean   @default(true)
 
+  // リマインダー送信済みフラグ
+  reminderSentApplication Boolean @default(false)
+  reminderSentPayment     Boolean @default(false)
+  reminderSentTraining    Boolean @default(false)
+
   // Googleカレンダー連携状態
   calendarSynced      Boolean   @default(false)
 
@@ -90,6 +96,20 @@ model PlannedTraining {
   updatedAt           DateTime  @updatedAt
 
   @@map("planned_trainings")
+}
+
+// Googleカレンダー連携用トークン
+model GoogleToken {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  user         User      @relation(fields: [userId], references: [id])
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("google_tokens")
 }
 
 enum Category {

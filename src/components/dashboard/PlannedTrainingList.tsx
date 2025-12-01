@@ -13,6 +13,9 @@ interface PlannedTraining {
   isOnline: boolean;
   memo: string | null;
   calendarSynced: boolean;
+  remindApplication: boolean;
+  remindPayment: boolean;
+  remindTraining: boolean;
 }
 
 interface PlannedTrainingListProps {
@@ -67,7 +70,7 @@ export default function PlannedTrainingList({
     return 'bg-white border-primary-100';
   };
 
-  const formatDateLabel = (dateStr: string | null, label: string) => {
+  const formatDateLabel = (dateStr: string | null) => {
     if (!dateStr) return null;
     const days = getDaysUntil(dateStr);
     const formattedDate = format(new Date(dateStr), 'M/d');
@@ -90,8 +93,8 @@ export default function PlannedTrainingList({
     <div className="space-y-3">
       {plannedTrainings.map((pt) => {
         const trainingDays = getDaysUntil(pt.trainingDate);
-        const applicationInfo = formatDateLabel(pt.applicationDeadline, '申込');
-        const paymentInfo = formatDateLabel(pt.paymentDeadline, '支払');
+        const applicationInfo = formatDateLabel(pt.applicationDeadline);
+        const paymentInfo = formatDateLabel(pt.paymentDeadline);
 
         return (
           <div
