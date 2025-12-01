@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
@@ -9,6 +9,9 @@ export async function GET() {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Clerkからユーザー情報を取得
+    const clerkUser = await currentUser();
 
     // ユーザーと資格情報を取得
     const user = await prisma.user.findUnique({
@@ -20,19 +23,28 @@ export async function GET() {
             createdAt: 'desc',
           },
         },
+        googleToken: {
+          select: {
+            id: true, // トークンの存在確認用
+          },
+        },
       },
     });
 
     if (!user) {
       return NextResponse.json({ 
         name: '',
-        certification: null 
+        email: clerkUser?.primaryEmailAddress?.emailAddress || '',
+        certification: null,
+        hasGoogleToken: false,
       });
     }
 
     return NextResponse.json({
       name: user.name,
+      email: user.email || clerkUser?.primaryEmailAddress?.emailAddress || '',
       certification: user.certifications[0] || null,
+      hasGoogleToken: !!user.googleToken,
     });
   } catch (error) {
     console.error('Error fetching profile:', error);
@@ -47,6 +59,10 @@ export async function PUT(request: NextRequest) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
+
+    // Clerkからユーザー情報を取得（メールアドレス用）
+    const clerkUser = await currentUser();
+    const email = clerkUser?.primaryEmailAddress?.emailAddress || null;
 
     const body = await request.json();
     const { name, certNumber, acquisitionDate } = body;
@@ -66,13 +82,14 @@ export async function PUT(request: NextRequest) {
           id: userId,
           clerkId: userId,
           name,
+          email,
         },
       });
     } else {
-      // 名前を更新
+      // 名前とメールアドレスを更新
       user = await prisma.user.update({
         where: { clerkId: userId },
-        data: { name },
+        data: { name, email },
       });
     }
 

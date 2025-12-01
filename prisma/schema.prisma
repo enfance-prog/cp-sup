@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id             String               @id
-  clerkId        String               @unique
-  name           String
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  certifications Certification[]
-  trainings      TrainingAttendance[]
+  id               String               @id
+  clerkId          String               @unique
+  name             String
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  certifications   Certification[]
+  trainings        TrainingAttendance[]
+  plannedTrainings PlannedTraining[]
 
   @@map("users")
 }
@@ -60,6 +61,35 @@ model TrainingAttendance {
 
   @@unique([userId, trainingId])
   @@map("training_attendances")
+}
+
+// 受講予定の研修（ノート機能）
+model PlannedTraining {
+  id                  String    @id @default(cuid())
+  userId              String
+  user                User      @relation(fields: [userId], references: [id])
+
+  // 研修情報
+  name                String    // 研修名
+  applicationDeadline DateTime? // 申込期日
+  paymentDeadline     DateTime? // 支払期日
+  trainingDate        DateTime  // 研修日（必須）
+  fee                 Int?      // 研修費（円）
+  isOnline            Boolean   @default(false)
+  memo                String?   // 備考
+
+  // リマインダー設定
+  remindApplication   Boolean   @default(true)
+  remindPayment       Boolean   @default(true)
+  remindTraining      Boolean   @default(true)
+
+  // Googleカレンダー連携状態
+  calendarSynced      Boolean   @default(false)
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@map("planned_trainings")
 }
 
 enum Category {

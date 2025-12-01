@@ -1,10 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { FaPlus, FaChartLine, FaWifi, FaUserCircle } from 'react-icons/fa';
+import { useSearchParams } from 'next/navigation';
+import { FaPlus, FaChartLine, FaWifi, FaUserCircle, FaClipboardList, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import AddTrainingModal from '@/components/dashboard/AddTrainingModal';
 import EditTrainingModal from '@/components/dashboard/EditTrainingModal';
 import TrainingList from '@/components/dashboard/TrainingList';
+import AddPlannedTrainingModal from '@/components/dashboard/AddPlannedTrainingModal';
+import EditPlannedTrainingModal from '@/components/dashboard/EditPlannedTrainingModal';
+import PlannedTrainingList from '@/components/dashboard/PlannedTrainingList';
 
 interface Training {
   id: string;
@@ -13,6 +17,21 @@ interface Training {
   points: number;
   date: string;
   isOnline: boolean;
+}
+
+interface PlannedTraining {
+  id: string;
+  name: string;
+  applicationDeadline: string | null;
+  paymentDeadline: string | null;
+  trainingDate: string;
+  fee: number | null;
+  isOnline: boolean;
+  memo: string | null;
+  calendarSynced: boolean;
+  remindApplication: boolean;
+  remindPayment: boolean;
+  remindTraining: boolean;
 }
 
 interface Stats {
@@ -24,8 +43,15 @@ interface Stats {
   inPersonPoints: number;
 }
 
+interface Toast {
+  type: 'success' | 'error';
+  message: string;
+}
+
 export default function DashboardPage() {
+  const searchParams = useSearchParams();
   const [trainings, setTrainings] = useState<Training[]>([]);
+  const [plannedTrainings, setPlannedTrainings] = useState<PlannedTraining[]>([]);
   const [stats, setStats] = useState<Stats>({
     totalPoints: 0,
     categoryA: 0,
@@ -35,9 +61,48 @@ export default function DashboardPage() {
     inPersonPoints: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState<Toast | null>(null);
+  
+  // 研修履歴のモーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState<Training | null>(null);
+  
+  // 受講予定のモーダル
+  const [isPlannedModalOpen, setIsPlannedModalOpen] = useState(false);
+  const [isEditPlannedModalOpen, setIsEditPlannedModalOpen] = useState(false);
+  const [selectedPlannedTraining, setSelectedPlannedTraining] = useState<PlannedTraining | null>(null);
+
+  // カレンダー連携の結果を表示
+  useEffect(() => {
+    const calendarStatus = searchParams.get('calendar');
+    if (calendarStatus === 'success') {
+      const count = searchParams.get('count');
+      setToast({
+        type: 'success',
+        message: `${count || ''}件のイベントをGoogleカレンダーに登録しました`,
+      });
+    } else if (calendarStatus === 'error') {
+      const message = searchParams.get('message');
+      setToast({
+        type: 'error',
+        message: message || 'カレンダー連携に失敗しました',
+      });
+    }
+
+    // URLパラメータをクリア
+    if (calendarStatus) {
+      window.history.replaceState({}, '', '/dashboard');
+    }
+  }, [searchParams]);
+
+  // トーストを自動で消す
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
 
   const fetchTrainings = useCallback(async () => {
     try {
@@ -49,14 +114,29 @@ export default function DashboardPage() {
       }
     } catch (error) {
       console.error('研修データの取得に失敗しました:', error);
-    } finally {
-      setLoading(false);
+    }
+  }, []);
+
+  const fetchPlannedTrainings = useCallback(async () => {
+    try {
+      const response = await fetch('/api/planned-trainings');
+      if (response.ok) {
+        const data = await response.json();
+        setPlannedTrainings(data);
+      }
+    } catch (error) {
+      console.error('受講予定の取得に失敗しました:', error);
     }
   }, []);
 
   useEffect(() => {
-    fetchTrainings();
-  }, [fetchTrainings]);
+    const fetchAll = async () => {
+      setLoading(true);
+      await Promise.all([fetchTrainings(), fetchPlannedTrainings()]);
+      setLoading(false);
+    };
+    fetchAll();
+  }, [fetchTrainings, fetchPlannedTrainings]);
 
   const calculateStats = (trainings: Training[]) => {
     const stats = trainings.reduce(
@@ -86,15 +166,107 @@ export default function DashboardPage() {
     setIsEditModalOpen(true);
   };
 
+  const handleEditPlanned = (plannedTraining: PlannedTraining) => {
+    setSelectedPlannedTraining(plannedTraining);
+    setIsEditPlannedModalOpen(true);
+  };
+
+  // カレンダー同期
+  const handleCalendarSync = async (plannedTraining: PlannedTraining) => {
+    try {
+      // まず既存のトークンで試す
+      const syncResponse = await fetch('/api/calendar/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plannedTrainingId: plannedTraining.id }),
+      });
+
+      const syncData = await syncResponse.json();
+
+      if (syncResponse.ok) {
+        setToast({
+          type: 'success',
+          message: syncData.message || 'カレンダーに登録しました',
+        });
+        fetchPlannedTrainings();
+        return;
+      }
+
+      // トークンがない、または無効な場合はOAuth認証へ
+      if (syncData.needsAuth) {
+        const authResponse = await fetch('/api/auth/google', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plannedTrainingId: plannedTraining.id }),
+        });
+
+        const authData = await authResponse.json();
+
+        if (authData.authUrl) {
+          // Google認証ページへリダイレクト
+          window.location.href = authData.authUrl;
+        } else {
+          setToast({
+            type: 'error',
+            message: '認証URLの取得に失敗しました',
+          });
+        }
+      } else {
+        setToast({
+          type: 'error',
+          message: syncData.error || 'カレンダー連携に失敗しました',
+        });
+      }
+    } catch (error) {
+      console.error('Calendar sync error:', error);
+      setToast({
+        type: 'error',
+        message: 'カレンダー連携中にエラーが発生しました',
+      });
+    }
+  };
+
   const recentTrainings = [...trainings]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
+
+  // 今後の予定（研修日が今日以降のもの）
+  const upcomingPlannedTrainings = plannedTrainings.filter(pt => {
+    const trainingDate = new Date(pt.trainingDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return trainingDate >= today;
+  });
 
   const targetPoints = 15;
   const progressPercentage = Math.min((stats.totalPoints / targetPoints) * 100, 100);
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* トースト通知 */}
+      {toast && (
+        <div
+          className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg animate-slide-up ${
+            toast.type === 'success'
+              ? 'bg-green-50 border border-green-200 text-green-800'
+              : 'bg-red-50 border border-red-200 text-red-800'
+          }`}
+        >
+          {toast.type === 'success' ? (
+            <FaCheckCircle className="text-green-600" />
+          ) : (
+            <FaExclamationCircle className="text-red-600" />
+          )}
+          <span>{toast.message}</span>
+          <button
+            onClick={() => setToast(null)}
+            className="ml-2 text-gray-400 hover:text-gray-600"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {/* ウェルカムカード */}
       <div className="tool-card bg-gradient-to-br from-primary-50 to-white border-primary-200">
         <div className="flex items-center justify-between">
@@ -214,6 +386,36 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* 受講予定の研修（新機能） */}
+          <div className="tool-card">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <FaClipboardList className="text-primary-600" />
+                受講予定の研修
+              </h3>
+              <button
+                onClick={() => setIsPlannedModalOpen(true)}
+                className="btn-secondary flex items-center gap-2 text-sm py-2 px-3"
+              >
+                <FaPlus className="text-xs" />
+                予定を追加
+              </button>
+            </div>
+            {upcomingPlannedTrainings.length > 0 ? (
+              <PlannedTrainingList
+                plannedTrainings={upcomingPlannedTrainings}
+                onUpdate={fetchPlannedTrainings}
+                onEdit={handleEditPlanned}
+                onCalendarSync={handleCalendarSync}
+              />
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                受講予定の研修がありません。<br />
+                「予定を追加」ボタンから登録してください。
+              </div>
+            )}
+          </div>
+
           {/* 最近の研修履歴 */}
           <div className="tool-card">
             <h3 className="text-lg font-bold text-gray-800 mb-4">最近の研修履歴</h3>
@@ -249,6 +451,24 @@ export default function DashboardPage() {
           setSelectedTraining(null);
         }}
         onSuccess={fetchTrainings}
+      />
+
+      {/* 受講予定追加モーダル */}
+      <AddPlannedTrainingModal
+        isOpen={isPlannedModalOpen}
+        onClose={() => setIsPlannedModalOpen(false)}
+        onSuccess={fetchPlannedTrainings}
+      />
+
+      {/* 受講予定編集モーダル */}
+      <EditPlannedTrainingModal
+        isOpen={isEditPlannedModalOpen}
+        plannedTraining={selectedPlannedTraining}
+        onClose={() => {
+          setIsEditPlannedModalOpen(false);
+          setSelectedPlannedTraining(null);
+        }}
+        onSuccess={fetchPlannedTrainings}
       />
     </div>
   );
