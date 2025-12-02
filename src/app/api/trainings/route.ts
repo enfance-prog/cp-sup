@@ -6,6 +6,9 @@ export async function GET() {
   try {
     const { userId } = await auth();
     
+    console.log('=== DEBUG: trainings API ===');
+    console.log('Clerk userId:', userId);
+    
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -15,7 +18,15 @@ export async function GET() {
       where: { clerkId: userId },
     });
 
+    console.log('Found user:', user);
+
     if (!user) {
+      // デバッグ: 全ユーザーのclerkIdを確認
+      const allUsers = await prisma.user.findMany({
+        select: { id: true, clerkId: true, name: true }
+      });
+      console.log('All users in DB:', allUsers);
+      
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
@@ -31,6 +42,8 @@ export async function GET() {
         },
       },
     });
+
+    console.log('Found trainings count:', trainings.length);
 
     // レスポンス形式を整形
     const formattedTrainings = trainings.map((attendance) => ({
