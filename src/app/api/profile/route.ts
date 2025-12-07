@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs/server';
 import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    // auth() を await で適切に処理
-    const authResult = await auth();
-    const userId = authResult?.userId;
+    // auth() を正しく呼び出す
+    const { userId } = await auth();
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // Clerkからユーザー情報を取得
-    const clerkUser = await currentUser();
+    const clerkUser = await clerkClient().users.getUser(userId);
 
     // ユーザーと資格情報を取得
     const user = await prisma.user.findUnique({
@@ -27,7 +27,7 @@ export async function GET() {
         },
         googleToken: {
           select: {
-            id: true, // トークンの存在確認用
+            id: true,
           },
         },
       },
@@ -56,16 +56,15 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    // auth() を await で適切に処理
-    const authResult = await auth();
-    const userId = authResult?.userId;
+    // auth() を正しく呼び出す
+    const { userId } = await auth();
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Clerkからユーザー情報を取得（メールアドレス用）
-    const clerkUser = await currentUser();
+    // Clerkからユーザー情報を取得
+    const clerkUser = await clerkClient().users.getUser(userId);
     const email = clerkUser?.primaryEmailAddress?.emailAddress || null;
 
     const body = await request.json();
