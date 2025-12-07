@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useUser } from '@clerk/nextjs';
-import { FaBars, FaBell } from 'react-icons/fa';
+import { FaBell } from 'react-icons/fa';
+import Image from 'next/image';
 
 interface HeaderProps {
   setSidebarOpen: (isOpen: boolean) => void;
@@ -57,16 +58,6 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-sm z-10 sticky top-0">
       <div className="flex h-16 items-center justify-between px-4 md:px-6 gap-2">
-        {/* ハンバーガーメニュー */}
-        <button
-          type="button"
-          className="text-gray-500 hover:text-gray-600 lg:hidden transition-colors flex-shrink-0"
-          onClick={() => setSidebarOpen(true)}
-        >
-          <span className="sr-only">メニューを開く</span>
-          <FaBars className="h-6 w-6" />
-        </button>
-
         {/* ページタイトル */}
         <div className="flex items-center flex-1 min-w-0 px-2">
           <h1 className="text-sm sm:text-base lg:text-xl font-semibold text-gray-800 truncate">
@@ -85,15 +76,30 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
             <FaBell className="h-5 w-5" />
           </button>
 
-          {/* ユーザープロフィール */}
-          <div className="flex items-center gap-2">
-            <div className="relative h-9 w-9 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold shadow-md">
-              {(displayName?.charAt(0) || user?.firstName?.charAt(0) || user?.lastName?.charAt(0) || 'U').toUpperCase()}
+          {/* ユーザープロフィール - クリックでサイドバー開く */}
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-full"
+          >
+            <div className="relative h-9 w-9 rounded-full overflow-hidden bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold shadow-md">
+              {user?.imageUrl ? (
+                <Image
+                  src={user.imageUrl}
+                  alt={displayName || 'User avatar'}
+                  width={36}
+                  height={36}
+                  className="object-cover"
+                />
+              ) : (
+                <span>
+                  {(displayName?.charAt(0) || user?.firstName?.charAt(0) || user?.lastName?.charAt(0) || 'U').toUpperCase()}
+                </span>
+              )}
             </div>
             <span className="hidden sm:block text-sm font-medium text-gray-700 truncate max-w-[120px] lg:max-w-none">
               {displayName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim()}
             </span>
-          </div>
+          </button>
         </div>
       </div>
     </header>
