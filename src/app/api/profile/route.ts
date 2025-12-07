@@ -4,7 +4,9 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const { userId } = await auth();
+    // auth() を await で適切に処理
+    const authResult = await auth();
+    const userId = authResult?.userId;
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -54,7 +56,9 @@ export async function GET() {
 
 export async function PUT(request: NextRequest) {
   try {
-    const { userId } = await auth();
+    // auth() を await で適切に処理
+    const authResult = await auth();
+    const userId = authResult?.userId;
     
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

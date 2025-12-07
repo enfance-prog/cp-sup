@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // シンプルな設定でOK
+  // Turbopackは開発時に `npm run dev` で自動的に使用されます
+  // SVGローダーなどの設定が必要な場合は、webpack設定で行います
 };
 
 export default nextConfig;
