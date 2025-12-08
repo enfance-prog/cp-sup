@@ -13,7 +13,7 @@ import PlannedTrainingList from '@/components/dashboard/PlannedTrainingList';
 interface Training {
   id: string;
   name: string;
-  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C';
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F';
   points: number;
   date: string;
   isOnline: boolean;
@@ -22,6 +22,8 @@ interface Training {
 interface PlannedTraining {
   id: string;
   name: string;
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | null;
+  points: number | null;
   applicationDeadline: string | null;
   paymentDeadline: string | null;
   trainingDate: string;

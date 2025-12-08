@@ -178,7 +178,7 @@ export default function PastTrainingDialog({
                 <label className="form-label">カテゴリー（群）</label>
                 <select
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' })}
                   className="select-field"
                   required
                 >
