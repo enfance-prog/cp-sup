@@ -1,289 +1,147 @@
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --background: #FEFDF9;
+        --foreground: #4A4238;
+        --primary: #5F6F65;
+        --border: #E5DACD;
+    }
+
     * {
-        border-color: hsl(var(--border));
+        border-color: var(--border);
     }
 
     body {
-        background: linear-gradient(135deg, #f8fafc 0%, #ecfdf5 100%);
-        color: #334155;
-        font-feature-settings:
-            "rlig" 1,
-            "calt" 1;
+        background-color: var(--background);
+        color: var(--foreground);
+        font-family: "Zen Kaku Gothic New", sans-serif;
+        font-feature-settings: "palt" 1;
+        /* Proportional metrics for Japanese */
+        line-height: 1.8;
+        /* Airy line height */
+        letter-spacing: 0.05em;
+        /* Elegant spacing */
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: "Zen Old Mincho", serif;
+        font-weight: 600;
+        letter-spacing: 0.08em;
     }
 }
 
 @layer components {
-    /* カード共通スタイル */
+
+    /* Container for "Airy" feel */
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px 0 rgba(74, 66, 56, 0.05);
+    }
+
+    /* Card Style - Elegant & Clean */
     .tool-card {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(8px);
-        border-radius: 1rem;
-        padding: 1.5rem;
-        box-shadow:
-            0 10px 15px -3px rgba(0, 0, 0, 0.1),
-            0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        border: 1px solid #d1fae5;
-        transition: all 0.3s ease;
+        @apply glass-panel;
+        border-radius: 12px;
+        padding: 2rem;
+        transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        border: 1px solid rgba(216, 195, 165, 0.2);
+        /* Soft beige border */
     }
 
     .tool-card:hover {
-        transform: translateY(-4px);
-        box-shadow:
-            0 20px 25px -5px rgba(0, 0, 0, 0.1),
-            0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.2);
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px -10px rgba(95, 111, 101, 0.15);
+        /* Soft Sage Shadow */
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(95, 111, 101, 0.3);
     }
 
-    /* ボタン共通スタイル */
+    /* Buttons - Clean & Pill-shaped */
     .btn-primary {
-        background: #10b981;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.75rem;
+        background: #5F6F65;
+        color: #F7F4F0;
+        padding: 0.8rem 2rem;
+        border-radius: 9999px;
+        /* Pill shape */
         font-weight: 500;
-        transition: all 0.2s ease;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        letter-spacing: 0.1em;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(95, 111, 101, 0.2);
     }
 
     .btn-primary:hover {
-        background: #059669;
-        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.5);
+        background: #4C5951;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(95, 111, 101, 0.3);
     }
 
     .btn-secondary {
-        background: white;
-        color: #059669;
-        border: 1px solid #a7f3d0;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.75rem;
+        background: #FFFFFF;
+        color: #5F6F65;
+        border: 1px solid #9CA778;
+        padding: 0.8rem 2rem;
+        border-radius: 9999px;
         font-weight: 500;
-        transition: all 0.2s ease;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        letter-spacing: 0.05em;
+        transition: all 0.3s ease;
     }
 
     .btn-secondary:hover {
-        background: #ecfdf5;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-danger {
-        background: #ef4444;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.75rem;
-        font-weight: 500;
-        transition: all 0.2s ease;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-danger:hover {
-        background: #dc2626;
-        box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.5);
+        background: #F4F6F4;
+        color: #4C5951;
+        border-color: #5F6F65;
     }
 
     .btn-outline {
-        border: 2px solid #a7f3d0;
-        color: #059669;
         background: transparent;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.75rem;
-        font-weight: 500;
-        transition: all 0.2s ease;
+        color: #5F6F65;
+        border: 1px solid #5F6F65;
+        padding: 0.6rem 1.5rem;
+        border-radius: 9999px;
+        font-weight: 400;
+        transition: all 0.3s ease;
     }
 
     .btn-outline:hover {
-        background: #ecfdf5;
+        background: rgba(95, 111, 101, 0.05);
     }
 
-    /* 入力フィールド */
+    /* Input Fields */
     .input-field {
         width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid #a7f3d0;
-        border-radius: 0.75rem;
+        padding: 0.9rem 1.2rem;
+        border: 1px solid #D8C3A5;
+        border-radius: 8px;
         background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(4px);
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
+        font-family: "Zen Kaku Gothic New", sans-serif;
+        color: #4A4238;
     }
 
     .input-field:focus {
         outline: none;
-        ring: 2px;
-        ring-color: #6ee7b7;
-        border-color: #34d399;
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #5F6F65;
+        box-shadow: 0 0 0 3px rgba(95, 111, 101, 0.1);
+        background: #FFFFFF;
     }
 
-    /* セレクトボックス */
-    .select-field {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid #a7f3d0;
-        border-radius: 0.75rem;
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(4px);
-        transition: all 0.2s ease;
-        appearance: none;
+    /* Text Select */
+    ::selection {
+        background: #D2DCA6;
+        /* Soft matcha highlight */
+        color: #262D29;
     }
-
-    .select-field:focus {
-        outline: none;
-        ring: 2px;
-        ring-color: #6ee7b7;
-        border-color: #34d399;
-    }
-
-    /* テキストエリア */
-    .textarea-field {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid #a7f3d0;
-        border-radius: 0.75rem;
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(4px);
-        transition: all 0.2s ease;
-        resize: none;
-    }
-
-    .textarea-field:focus {
-        outline: none;
-        ring: 2px;
-        ring-color: #6ee7b7;
-        border-color: #34d399;
-    }
-
-    /* ファイル入力 */
-    .file-input {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 2px dashed #a7f3d0;
-        border-radius: 0.75rem;
-        background: rgba(236, 253, 245, 0.5);
-        transition: all 0.2s ease;
-        text-align: center;
-        cursor: pointer;
-    }
-
-    .file-input:hover {
-        background: rgba(209, 250, 229, 0.5);
-    }
-
-    /* ラベル */
-    .form-label {
-        display: block;
-        font-size: 0.875rem;
-        font-weight: 600;
-        color: #374151;
-        margin-bottom: 0.5rem;
-    }
-
-    /* アニメーション */
-    .fade-in {
-        animation: fadeIn 0.5s ease-out;
-    }
-
-    .slide-up {
-        animation: slideUp 0.5s ease-out;
-    }
-
-    /* グラデーション背景 */
-    .gradient-bg {
-        background: linear-gradient(
-            135deg,
-            #34d399 0%,
-            #10b981 50%,
-            #059669 100%
-        );
-    }
-
-    /* ガラスモーフィズム効果 */
-    .glass {
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    /* アイコンスタイル */
-    .icon-trash {
-        width: 1.25rem;
-        height: 1.25rem;
-        color: #ef4444;
-        cursor: pointer;
-        transition: color 0.2s ease;
-    }
-
-    .icon-trash:hover {
-        color: #dc2626;
-    }
-
-    /* スクロールバー */
-    .custom-scrollbar {
-        scrollbar-width: thin;
-        scrollbar-color: #a7f3d0 #d1fae5;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #d1fae5;
-        border-radius: 3px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #a7f3d0;
-        border-radius: 3px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #6ee7b7;
-    }
-}
-
-@layer utilities {
-    .text-balance {
-        text-wrap: balance;
-    }
-}
-
-/* カスタムアニメーション */
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes slideUp {
-    0% {
-        opacity: 0;
-        transform: translateY(1rem);
-    }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes pulse-gentle {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.8;
-    }
-}
-
-.animate-pulse-gentle {
-    animation: pulse-gentle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

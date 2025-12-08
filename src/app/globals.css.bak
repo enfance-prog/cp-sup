@@ -1,0 +1,289 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    * {
+        border-color: hsl(var(--border));
+    }
+
+    body {
+        background: linear-gradient(135deg, #f8fafc 0%, #ecfdf5 100%);
+        color: #334155;
+        font-feature-settings:
+            "rlig" 1,
+            "calt" 1;
+    }
+}
+
+@layer components {
+    /* カード共通スタイル */
+    .tool-card {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow:
+            0 10px 15px -3px rgba(0, 0, 0, 0.1),
+            0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        border: 1px solid #d1fae5;
+        transition: all 0.3s ease;
+    }
+
+    .tool-card:hover {
+        transform: translateY(-4px);
+        box-shadow:
+            0 20px 25px -5px rgba(0, 0, 0, 0.1),
+            0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.2);
+    }
+
+    /* ボタン共通スタイル */
+    .btn-primary {
+        background: #10b981;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-primary:hover {
+        background: #059669;
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn-secondary {
+        background: white;
+        color: #059669;
+        border: 1px solid #a7f3d0;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-secondary:hover {
+        background: #ecfdf5;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-danger {
+        background: #ef4444;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+        box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.5);
+    }
+
+    .btn-outline {
+        border: 2px solid #a7f3d0;
+        color: #059669;
+        background: transparent;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-outline:hover {
+        background: #ecfdf5;
+    }
+
+    /* 入力フィールド */
+    .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #a7f3d0;
+        border-radius: 0.75rem;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        transition: all 0.2s ease;
+    }
+
+    .input-field:focus {
+        outline: none;
+        ring: 2px;
+        ring-color: #6ee7b7;
+        border-color: #34d399;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    /* セレクトボックス */
+    .select-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #a7f3d0;
+        border-radius: 0.75rem;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        transition: all 0.2s ease;
+        appearance: none;
+    }
+
+    .select-field:focus {
+        outline: none;
+        ring: 2px;
+        ring-color: #6ee7b7;
+        border-color: #34d399;
+    }
+
+    /* テキストエリア */
+    .textarea-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 1px solid #a7f3d0;
+        border-radius: 0.75rem;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(4px);
+        transition: all 0.2s ease;
+        resize: none;
+    }
+
+    .textarea-field:focus {
+        outline: none;
+        ring: 2px;
+        ring-color: #6ee7b7;
+        border-color: #34d399;
+    }
+
+    /* ファイル入力 */
+    .file-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px dashed #a7f3d0;
+        border-radius: 0.75rem;
+        background: rgba(236, 253, 245, 0.5);
+        transition: all 0.2s ease;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .file-input:hover {
+        background: rgba(209, 250, 229, 0.5);
+    }
+
+    /* ラベル */
+    .form-label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+    }
+
+    /* アニメーション */
+    .fade-in {
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .slide-up {
+        animation: slideUp 0.5s ease-out;
+    }
+
+    /* グラデーション背景 */
+    .gradient-bg {
+        background: linear-gradient(
+            135deg,
+            #34d399 0%,
+            #10b981 50%,
+            #059669 100%
+        );
+    }
+
+    /* ガラスモーフィズム効果 */
+    .glass {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* アイコンスタイル */
+    .icon-trash {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: #ef4444;
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .icon-trash:hover {
+        color: #dc2626;
+    }
+
+    /* スクロールバー */
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #a7f3d0 #d1fae5;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #d1fae5;
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #a7f3d0;
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #6ee7b7;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+}
+
+/* カスタムアニメーション */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(1rem);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse-gentle {
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.animate-pulse-gentle {
+    animation: pulse-gentle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

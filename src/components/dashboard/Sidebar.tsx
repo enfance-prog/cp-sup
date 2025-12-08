@@ -43,7 +43,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
     <>
       {/* オーバーレイ */}
       {isOpen && (
-        <div 
+        <div
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         ></div>
@@ -51,18 +51,17 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 
       {/* サイドバー - 右側から表示 */}
       <aside
-        className={`fixed inset-y-0 right-0 z-50 w-64 transform bg-gradient-to-br from-primary-600 to-primary-700 text-white transition-transform duration-300 ease-in-out ${
-          isOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
+        className={`fixed inset-y-0 right-0 z-50 w-64 transform bg-gradient-to-br from-primary-600 to-primary-700 text-white transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
       >
         <div className="flex h-full flex-col">
           {/* サイドバーヘッダー */}
           <div className="flex h-16 items-center justify-between px-4 bg-primary-700/50 backdrop-blur-sm">
             <Link href="/dashboard" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
-              <Image 
-                src="/logo.png" 
-                alt="ロゴ" 
-                width={32} 
+              <Image
+                src="/logo.png"
+                alt="ロゴ"
+                width={32}
                 height={32}
                 className="rounded-lg"
               />
@@ -82,7 +81,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           <div className="px-4 py-6 border-b border-primary-500/30">
             <div className="flex items-center gap-3">
               <div className="relative h-12 w-12 rounded-full overflow-hidden bg-white/20 flex items-center justify-center text-white font-semibold shadow-md flex-shrink-0">
-                {user?.imageUrl ? (
+                {user?.hasImage ? (
                   <Image
                     src={user.imageUrl}
                     alt="User avatar"
@@ -98,8 +97,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-white truncate">
-                  {user?.firstName || user?.lastName 
-                    ? `${user.firstName || ''} ${user.lastName || ''}`.trim() 
+                  {user?.firstName || user?.lastName
+                    ? `${user.firstName || ''} ${user.lastName || ''}`.trim()
                     : 'ユーザー'}
                 </p>
                 <p className="text-xs text-primary-100 truncate">
@@ -125,11 +124,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   ) : (
                     <Link
                       href={item.href}
-                      className={`flex items-center rounded-lg px-4 py-3 transition-all ${
-                        pathname === item.href
+                      className={`flex items-center rounded-lg px-4 py-3 transition-all ${pathname === item.href
                           ? 'bg-white/20 text-white shadow-lg'
                           : 'text-primary-50 hover:bg-white/10 hover:text-white'
-                      }`}
+                        }`}
                       onClick={() => setIsOpen(false)}
                     >
                       {item.icon}

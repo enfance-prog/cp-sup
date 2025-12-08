@@ -12,7 +12,7 @@ interface HeaderProps {
 export default function Header({ setSidebarOpen }: HeaderProps) {
   const { user } = useUser();
   const [displayName, setDisplayName] = useState('');
-  
+
   const fetchUserName = useCallback(async () => {
     try {
       const response = await fetch('/api/profile');
@@ -23,7 +23,7 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
           setDisplayName(data.name);
         } else {
           // Clerkから取得した名前を使用（GoogleまたはAppleの登録名）
-          const clerkName = user?.firstName 
+          const clerkName = user?.firstName
             ? `${user.firstName}${user.lastName ? ' ' + user.lastName : ''}`
             : user?.lastName || '';
           setDisplayName(clerkName);
@@ -32,13 +32,13 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
     } catch (error) {
       console.error('ユーザー名の取得に失敗しました:', error);
       // エラー時はClerkの名前をフォールバック
-      const clerkName = user?.firstName 
+      const clerkName = user?.firstName
         ? `${user.firstName}${user.lastName ? ' ' + user.lastName : ''}`
         : user?.lastName || '';
       setDisplayName(clerkName);
     }
   }, [user]);
-  
+
   useEffect(() => {
     fetchUserName();
   }, [fetchUserName]);
@@ -54,7 +54,7 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
       window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
   }, [fetchUserName]);
-  
+
   return (
     <header className="bg-white/80 backdrop-blur-md shadow-sm z-10 sticky top-0">
       <div className="flex h-16 items-center justify-between px-4 md:px-6 gap-2">
@@ -82,7 +82,7 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-full"
           >
             <div className="relative h-9 w-9 rounded-full overflow-hidden shadow-lg">
-              {user?.imageUrl ? (
+              {user?.hasImage ? (
                 <div className="relative w-full h-full">
                   {/* リキッドグラス風の背景 */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary-300/80 via-primary-400/60 to-primary-500/80 backdrop-blur-sm"></div>
