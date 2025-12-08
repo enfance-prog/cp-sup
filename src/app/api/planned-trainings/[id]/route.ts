@@ -18,6 +18,8 @@ export async function PUT(
     const body = await request.json();
     const {
       name,
+      category,
+      points,
       applicationDeadline,
       paymentDeadline,
       trainingDate,
@@ -66,6 +68,8 @@ export async function PUT(
       where: { id: plannedTrainingId },
       data: {
         name,
+        category: category !== undefined ? (category || null) : undefined,
+        points: points !== undefined ? (points ? parseInt(points) : null) : undefined,
         applicationDeadline: parseDate(applicationDeadline),
         paymentDeadline: parseDate(paymentDeadline),
         trainingDate: parseDate(trainingDate)!,

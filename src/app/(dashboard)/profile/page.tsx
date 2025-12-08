@@ -30,6 +30,15 @@ export default function ProfilePage() {
     acquisitionDate: '',
   });
 
+  // UTC日付文字列を日本語フォーマットに変換（タイムゾーンの影響を受けない）
+  const formatUTCDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth() + 1;
+    const day = date.getUTCDate();
+    return `${year}年${month}月${day}日`;
+  };
+
   useEffect(() => {
     fetchUserData();
   }, []);
@@ -293,13 +302,13 @@ export default function ProfilePage() {
                     <div className="flex items-center justify-between py-3 border-b border-gray-200">
                       <span className="text-gray-600">資格取得日</span>
                       <span className="font-semibold text-gray-800">
-                        {format(new Date(userData.certification.acquisitionDate), 'yyyy年M月d日')}
+                        {formatUTCDate(userData.certification.acquisitionDate)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between py-3">
                       <span className="text-gray-600">有効期限</span>
                       <span className="font-semibold text-gray-800">
-                        {format(new Date(userData.certification.expirationDate), 'yyyy年M月d日')}
+                        {formatUTCDate(userData.certification.expirationDate)}
                       </span>
                     </div>
                   </div>

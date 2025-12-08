@@ -6,7 +6,7 @@ import { FaTimes, FaSave } from 'react-icons/fa';
 interface Training {
   id: string;
   name: string;
-  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C';
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F';
   points: number;
   date: string;
   isOnline: boolean;
@@ -22,7 +22,7 @@ interface EditTrainingModalProps {
 export default function EditTrainingModal({ isOpen, training, onClose, onSuccess }: EditTrainingModalProps) {
   const [formData, setFormData] = useState({
     name: '',
-    category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C',
+    category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F',
     points: 0,
     date: '',
     isOnline: false,
@@ -97,13 +97,16 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
             <label className="form-label">カテゴリー</label>
             <select
               value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' })}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' })}
               className="select-field"
               required
             >
               <option value="CATEGORY_A">1群</option>
               <option value="CATEGORY_B">2群</option>
               <option value="CATEGORY_C">3群</option>
+              <option value="CATEGORY_D">4群</option>
+              <option value="CATEGORY_E">5群</option>
+              <option value="CATEGORY_F">6群</option>
             </select>
           </div>
 

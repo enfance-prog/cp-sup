@@ -6,6 +6,8 @@ import { FaTimes, FaSave, FaWifi, FaCalendarAlt, FaYenSign } from 'react-icons/f
 interface PlannedTraining {
   id: string;
   name: string;
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | null;
+  points: number | null;
   applicationDeadline: string | null;
   paymentDeadline: string | null;
   trainingDate: string;
@@ -32,6 +34,8 @@ export default function EditPlannedTrainingModal({
 }: EditPlannedTrainingModalProps) {
   const [formData, setFormData] = useState({
     name: '',
+    category: '' as '' | 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F',
+    points: '',
     applicationDeadline: '',
     paymentDeadline: '',
     trainingDate: '',
@@ -53,6 +57,8 @@ export default function EditPlannedTrainingModal({
 
       setFormData({
         name: plannedTraining.name,
+        category: plannedTraining.category || '',
+        points: plannedTraining.points?.toString() || '',
         applicationDeadline: formatDate(plannedTraining.applicationDeadline),
         paymentDeadline: formatDate(plannedTraining.paymentDeadline),
         trainingDate: formatDate(plannedTraining.trainingDate),
@@ -119,6 +125,47 @@ export default function EditPlannedTrainingModal({
               className="input-field"
               required
             />
+          </div>
+
+          {/* 群とポイント（オプショナル） */}
+          <div className="bg-blue-50 rounded-lg p-4 space-y-4">
+            <div className="text-blue-700 font-semibold text-sm">
+              研修情報（事前に判明している場合のみ）
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              {/* 群 */}
+              <div>
+                <label className="form-label">群</label>
+                <select
+                  value={formData.category}
+                  onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
+                  className="select-field"
+                >
+                  <option value="">未定</option>
+                  <option value="CATEGORY_A">1群</option>
+                  <option value="CATEGORY_B">2群</option>
+                  <option value="CATEGORY_C">3群</option>
+                  <option value="CATEGORY_D">4群</option>
+                  <option value="CATEGORY_E">5群</option>
+                  <option value="CATEGORY_F">6群</option>
+                </select>
+              </div>
+
+              {/* ポイント */}
+              <div>
+                <label className="form-label">ポイント数</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={formData.points}
+                  onChange={(e) => setFormData({ ...formData, points: e.target.value })}
+                  className="input-field"
+                  placeholder="例: 2"
+                />
+              </div>
+            </div>
           </div>
 
           {/* 日程セクション */}

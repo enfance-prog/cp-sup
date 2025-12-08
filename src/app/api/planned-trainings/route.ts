@@ -45,6 +45,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       name,
+      category,
+      points,
       applicationDeadline,
       paymentDeadline,
       trainingDate,
@@ -90,6 +92,8 @@ export async function POST(request: NextRequest) {
       data: {
         userId: user.id,
         name,
+        category: category || null,
+        points: points ? parseInt(points) : null,
         applicationDeadline: parseDate(applicationDeadline),
         paymentDeadline: parseDate(paymentDeadline),
         trainingDate: parseDate(trainingDate)!,

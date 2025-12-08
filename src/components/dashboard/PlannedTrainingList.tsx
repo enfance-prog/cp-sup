@@ -6,6 +6,8 @@ import { format, differenceInDays } from 'date-fns';
 interface PlannedTraining {
   id: string;
   name: string;
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | null;
+  points: number | null;
   applicationDeadline: string | null;
   paymentDeadline: string | null;
   trainingDate: string;
@@ -31,6 +33,18 @@ export default function PlannedTrainingList({
   onEdit,
   onCalendarSync,
 }: PlannedTrainingListProps) {
+  const getCategoryLabel = (category: string) => {
+    const labels: Record<string, string> = {
+      CATEGORY_A: '1群',
+      CATEGORY_B: '2群',
+      CATEGORY_C: '3群',
+      CATEGORY_D: '4群',
+      CATEGORY_E: '5群',
+      CATEGORY_F: '6群',
+    };
+    return labels[category] || category;
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('この受講予定を削除してもよろしいですか？')) return;
 
@@ -115,6 +129,22 @@ export default function PlannedTrainingList({
                     </span>
                   )}
                 </div>
+
+                {/* 群とポイント */}
+                {(pt.category || pt.points) && (
+                  <div className="flex items-center gap-3 mb-2 flex-wrap">
+                    {pt.category && (
+                      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-md text-xs font-medium">
+                        {getCategoryLabel(pt.category)}
+                      </span>
+                    )}
+                    {pt.points && (
+                      <span className="text-sm font-semibold text-primary-600">
+                        {pt.points}pt
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 {/* 日程情報 */}
                 <div className="space-y-2 text-sm">

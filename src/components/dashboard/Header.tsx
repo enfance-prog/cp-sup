@@ -81,19 +81,35 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
             onClick={() => setSidebarOpen(true)}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-full"
           >
-            <div className="relative h-9 w-9 rounded-full overflow-hidden bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold shadow-md">
+            <div className="relative h-9 w-9 rounded-full overflow-hidden shadow-lg">
               {user?.imageUrl ? (
-                <Image
-                  src={user.imageUrl}
-                  alt={displayName || 'User avatar'}
-                  width={36}
-                  height={36}
-                  className="object-cover"
-                />
+                <div className="relative w-full h-full">
+                  {/* リキッドグラス風の背景 */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary-300/80 via-primary-400/60 to-primary-500/80 backdrop-blur-sm"></div>
+                  {/* 光沢効果 */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-white/40 via-transparent to-transparent"></div>
+                  {/* アバター画像 */}
+                  <Image
+                    src={user.imageUrl}
+                    alt={displayName || 'User avatar'}
+                    width={36}
+                    height={36}
+                    className="relative z-10 object-cover w-full h-full"
+                  />
+                </div>
               ) : (
-                <span>
-                  {(displayName?.charAt(0) || user?.firstName?.charAt(0) || user?.lastName?.charAt(0) || 'U').toUpperCase()}
-                </span>
+                <div className="relative w-full h-full flex items-center justify-center text-white font-semibold">
+                  {/* リキッドグラス風のグラデーション背景 */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary-300 via-primary-400 to-primary-600"></div>
+                  {/* 光沢効果 */}
+                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent rounded-full"></div>
+                  {/* 影効果 */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent rounded-full"></div>
+                  {/* イニシャル */}
+                  <span className="relative z-10">
+                    {(displayName?.charAt(0) || user?.firstName?.charAt(0) || user?.lastName?.charAt(0) || 'U').toUpperCase()}
+                  </span>
+                </div>
               )}
             </div>
             <span className="hidden sm:block text-sm font-medium text-gray-700 truncate max-w-[120px] lg:max-w-none">

@@ -73,6 +73,8 @@ model PlannedTraining {
 
   // 研修情報
   name                String    // 研修名
+  category            Category? // 群（オプショナル）
+  points              Int?      // ポイント数（オプショナル）
   applicationDeadline DateTime? // 申込期日
   paymentDeadline     DateTime? // 支払期日
   trainingDate        DateTime  // 研修日（必須）
@@ -92,6 +94,9 @@ model PlannedTraining {
 
   // Googleカレンダー連携状態
   calendarSynced      Boolean   @default(false)
+
+  // 研修日過ぎフラグ（ログイン時にダイアログ表示用）
+  hasPastTrainingDate Boolean   @default(false)
 
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
@@ -117,4 +122,7 @@ enum Category {
   CATEGORY_A
   CATEGORY_B
   CATEGORY_C
+  CATEGORY_D
+  CATEGORY_E
+  CATEGORY_F
 }

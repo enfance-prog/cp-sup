@@ -6,7 +6,7 @@ import { format } from "date-fns";
 interface Training {
   id: string;
   name: string;
-  category: "CATEGORY_A" | "CATEGORY_B" | "CATEGORY_C";
+  category: "CATEGORY_A" | "CATEGORY_B" | "CATEGORY_C" | "CATEGORY_D" | "CATEGORY_E" | "CATEGORY_F";
   points: number;
   date: string;
   isOnline: boolean;
@@ -31,6 +31,12 @@ export default function TrainingList({
         return "2群";
       case "CATEGORY_C":
         return "3群";
+      case "CATEGORY_D":
+        return "4群";
+      case "CATEGORY_E":
+        return "5群";
+      case "CATEGORY_F":
+        return "6群";
       default:
         return category;
     }
@@ -44,6 +50,12 @@ export default function TrainingList({
         return "bg-purple-100 text-purple-700";
       case "CATEGORY_C":
         return "bg-pink-100 text-pink-700";
+      case "CATEGORY_D":
+        return "bg-green-100 text-green-700";
+      case "CATEGORY_E":
+        return "bg-yellow-100 text-yellow-700";
+      case "CATEGORY_F":
+        return "bg-orange-100 text-orange-700";
       default:
         return "bg-gray-100 text-gray-700";
     }

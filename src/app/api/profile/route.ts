@@ -96,10 +96,11 @@ export async function PUT(request: NextRequest) {
       });
     }
 
-    // 有効期限を計算（取得日から5年後）
+    // 有効期限を計算（取得日から5年後の前日）
     const acquisitionDateObj = new Date(acquisitionDate + 'T00:00:00.000Z');
     const expirationDate = new Date(acquisitionDateObj);
-    expirationDate.setFullYear(expirationDate.getFullYear() + 5);
+    expirationDate.setUTCFullYear(expirationDate.getUTCFullYear() + 5);
+    expirationDate.setUTCDate(expirationDate.getUTCDate() - 1); // 5年後の前日
 
     // 既存の資格情報を確認
     const existingCert = await prisma.certification.findFirst({
