@@ -316,10 +316,10 @@ export default function DashboardPage() {
       ) : (
         <>
           {/* ポイント集計バナー */}
-          <div className="rounded-2xl shadow-lg border border-gray-700/50 bg-gradient-to-r from-gray-800 to-gray-900 text-white overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01]">
+          <div className="rounded-2xl shadow-lg border border-gray-700/50 bg-gradient-to-r from-gray-800 to-gray-900 text-white overflow-hidden transition-all duration-300 ease-in-out hover:shadow-xl hover:scale-[1.01] group">
             {/* 常時表示エリア（合計ポイント） */}
             <div
-              className="p-6 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              className="p-6 flex items-center justify-between cursor-pointer transition-colors !bg-transparent text-white group"
               onClick={() => setIsPointExpanded(!isPointExpanded)}
             >
               <div className="flex items-center gap-4">

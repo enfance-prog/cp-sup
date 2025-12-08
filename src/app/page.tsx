@@ -226,9 +226,6 @@ export default function WelcomePage() {
       {/* フッター */}
       <footer className="bg-text-main text-secondary-50 py-12 px-6">
         <div className="max-w-7xl mx-auto flex flex-col items-center">
-          {/* サポートセクション */}
-
-
           <div className="flex flex-col md:flex-row justify-between items-center w-full border-t border-secondary-800 pt-8 gap-4">
             <p className="text-secondary-400 text-sm font-light tracking-wider">
               © 2025 enfance / Clinical Psychologist Support
