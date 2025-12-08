@@ -13,8 +13,6 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen flex">
-      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-
       <div className="flex-1 flex flex-col min-w-0">
         <Header setSidebarOpen={setSidebarOpen} />
 
@@ -24,6 +22,8 @@ export default function DashboardLayout({
 
         {/* フッター - 削除 (サイドバーに移動) */}
       </div>
+
+      <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
     </div>
   );
 }

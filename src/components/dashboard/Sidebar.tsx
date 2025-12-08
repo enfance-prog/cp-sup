@@ -45,14 +45,14 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
       {/* オーバーレイ */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
 
       {/* サイドバー - 右側から表示 */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 transform bg-gradient-to-br from-primary-600 to-primary-700 text-white transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed inset-y-0 right-0 z-50 w-64 transform bg-gradient-to-br from-primary-600 to-primary-700 text-white transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
       >
         <div className="flex h-full flex-col">
