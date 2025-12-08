@@ -2,6 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { FaTimes, FaSave, FaWifi, FaCalendarAlt, FaYenSign } from 'react-icons/fa';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { ja } from 'date-fns/locale/ja';
+import { format } from 'date-fns';
+
+registerLocale('ja', ja);
 
 interface PlannedTraining {
   id: string;
@@ -180,38 +185,47 @@ export default function EditPlannedTrainingModal({
               <label className="form-label">
                 研修日 <span className="text-red-500">*</span>
               </label>
-              <input
-                type="date"
-                lang="ja-JP"
-                value={formData.trainingDate}
-                onChange={(e) => setFormData({ ...formData, trainingDate: e.target.value })}
-                className="input-field"
-                required
-              />
+              <div className="w-full">
+                <DatePicker
+                  locale="ja"
+                  dateFormat="yyyy年M月d日"
+                  placeholderText="2025年4月1日"
+                  selected={formData.trainingDate ? new Date(formData.trainingDate) : null}
+                  onChange={(date) => setFormData({ ...formData, trainingDate: date ? format(date, 'yyyy-MM-dd') : '' })}
+                  className="input-field w-full"
+                  required
+                />
+              </div>
             </div>
 
             {/* 申込期日 */}
             <div>
               <label className="form-label">申込期日</label>
-              <input
-                type="date"
-                lang="ja-JP"
-                value={formData.applicationDeadline}
-                onChange={(e) => setFormData({ ...formData, applicationDeadline: e.target.value })}
-                className="input-field"
-              />
+              <div className="w-full">
+                <DatePicker
+                  locale="ja"
+                  dateFormat="yyyy年M月d日"
+                  placeholderText="2025年4月1日"
+                  selected={formData.applicationDeadline ? new Date(formData.applicationDeadline) : null}
+                  onChange={(date) => setFormData({ ...formData, applicationDeadline: date ? format(date, 'yyyy-MM-dd') : '' })}
+                  className="input-field w-full"
+                />
+              </div>
             </div>
 
             {/* 支払期日 */}
             <div>
               <label className="form-label">支払期日</label>
-              <input
-                type="date"
-                lang="ja-JP"
-                value={formData.paymentDeadline}
-                onChange={(e) => setFormData({ ...formData, paymentDeadline: e.target.value })}
-                className="input-field"
-              />
+              <div className="w-full">
+                <DatePicker
+                  locale="ja"
+                  dateFormat="yyyy年M月d日"
+                  placeholderText="2025年4月1日"
+                  selected={formData.paymentDeadline ? new Date(formData.paymentDeadline) : null}
+                  onChange={(date) => setFormData({ ...formData, paymentDeadline: date ? format(date, 'yyyy-MM-dd') : '' })}
+                  className="input-field w-full"
+                />
+              </div>
             </div>
           </div>
 

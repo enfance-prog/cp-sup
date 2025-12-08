@@ -2,6 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { FaTimes, FaSave } from 'react-icons/fa';
+import DatePicker, { registerLocale } from 'react-datepicker';
+import { ja } from 'date-fns/locale/ja';
+
+registerLocale('ja', ja);
 
 interface Training {
   id: string;
@@ -24,7 +28,8 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
     name: '',
     category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F',
     points: 0,
-    date: '',
+    points: 0,
+    date: new Date(),
     isOnline: false,
   });
   const [submitting, setSubmitting] = useState(false);
@@ -35,7 +40,7 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
         name: training.name,
         category: training.category,
         points: training.points,
-        date: new Date(training.date).toISOString().split('T')[0],
+        date: new Date(training.date),
         isOnline: training.isOnline,
       });
     }
@@ -125,14 +130,16 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
 
           <div>
             <label className="form-label">受講日</label>
-            <input
-              type="date"
-              lang="ja-JP"
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              className="input-field"
-              required
-            />
+            <div className="w-full">
+              <DatePicker
+                locale="ja"
+                dateFormat="yyyy年M月d日"
+                selected={formData.date}
+                onChange={(date) => setFormData({ ...formData, date: date || new Date() })}
+                className="input-field w-full"
+                required
+              />
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
