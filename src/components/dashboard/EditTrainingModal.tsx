@@ -28,7 +28,7 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
     name: '',
     category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F',
     points: 0,
-    points: 0,
+
     date: new Date(),
     isOnline: false,
   });

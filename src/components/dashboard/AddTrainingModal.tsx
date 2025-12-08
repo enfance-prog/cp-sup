@@ -45,7 +45,7 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess }: AddTrai
           name: '',
           category: 'CATEGORY_A',
           points: 1,
-          points: 1,
+
           date: new Date(),
           isOnline: false,
         });
