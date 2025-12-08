@@ -81,36 +81,42 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
             onClick={() => setSidebarOpen(true)}
             className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-primary-500 rounded-full"
           >
-            <div className="relative h-9 w-9 rounded-full overflow-hidden shadow-lg">
-              {user?.hasImage ? (
-                <div className="relative w-full h-full">
-                  {/* リキッドグラス風の背景 */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-300/80 via-primary-400/60 to-primary-500/80 backdrop-blur-sm"></div>
-                  {/* 光沢効果 */}
-                  <div className="absolute inset-0 bg-gradient-to-tr from-white/40 via-transparent to-transparent"></div>
-                  {/* アバター画像 */}
-                  <Image
-                    src={user.imageUrl}
-                    alt={displayName || 'User avatar'}
-                    width={36}
-                    height={36}
-                    className="relative z-10 object-cover w-full h-full"
-                  />
-                </div>
-              ) : (
-                <div className="relative w-full h-full flex items-center justify-center text-white font-semibold">
-                  {/* リキッドグラス風のグラデーション背景 */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-300 via-primary-400 to-primary-600"></div>
-                  {/* 光沢効果 */}
-                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent rounded-full"></div>
-                  {/* 影効果 */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent rounded-full"></div>
-                  {/* イニシャル */}
-                  <span className="relative z-10">
-                    {(displayName?.charAt(0) || user?.firstName?.charAt(0) || user?.lastName?.charAt(0) || 'U').toUpperCase()}
-                  </span>
-                </div>
-              )}
+            <div className="relative h-10 w-10 rounded-full shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-transform hover:scale-105 duration-300">
+              {/* 水滴のような形状効果 - 外側の光彩 */}
+              <div className="absolute -inset-0.5 bg-gradient-to-br from-white/80 to-primary-200/50 rounded-full opacity-70 blur-[1px]"></div>
+
+              <div className="relative h-full w-full rounded-full overflow-hidden border border-white/40">
+                {user?.hasImage ? (
+                  <div className="relative w-full h-full">
+                    {/* 水滴のハイライト効果 */}
+                    <div className="absolute inset-0 z-20 rounded-full shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(0,0,0,0.1)]"></div>
+                    <div className="absolute top-[10%] left-[15%] w-[30%] h-[15%] bg-white/90 rounded-[100%] blur-[0.5px] rotate-[-45deg] z-20"></div>
+                    <div className="absolute bottom-[10%] right-[15%] w-[15%] h-[15%] bg-white/40 rounded-full blur-[1px] z-20"></div>
+
+                    <Image
+                      src={user.imageUrl}
+                      alt={displayName || 'User avatar'}
+                      width={40}
+                      height={40}
+                      className="relative z-10 object-cover w-full h-full"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative w-full h-full flex items-center justify-center text-white font-semibold">
+                    {/* リキッドグラス風のグラデーション背景 */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-600"></div>
+
+                    {/* 水滴のハイライト効果 */}
+                    <div className="absolute inset-0 z-20 rounded-full shadow-[inset_0_2px_6px_rgba(255,255,255,0.7),inset_0_-4px_6px_rgba(0,0,0,0.2)]"></div>
+                    <div className="absolute top-[15%] left-[20%] w-[35%] h-[20%] bg-gradient-to-b from-white to-white/0 rounded-[100%] opacity-90 blur-[0.5px] rotate-[-45deg] z-20"></div>
+
+                    {/* イニシャル */}
+                    <span className="relative z-10 drop-shadow-md text-sm">
+                      {(displayName?.charAt(0) || user?.firstName?.charAt(0) || user?.lastName?.charAt(0) || 'U').toUpperCase()}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
             <span className="hidden sm:block text-sm font-medium text-gray-700 truncate max-w-[120px] lg:max-w-none">
               {displayName || `${user?.firstName || ''} ${user?.lastName || ''}`.trim()}

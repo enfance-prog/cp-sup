@@ -127,6 +127,7 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
             <label className="form-label">受講日</label>
             <input
               type="date"
+              lang="ja-JP"
               value={formData.date}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
               className="input-field"

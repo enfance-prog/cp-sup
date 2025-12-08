@@ -9,7 +9,7 @@ import EditTrainingModal from '@/components/dashboard/EditTrainingModal';
 interface Training {
   id: string;
   name: string;
-  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C';
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F';
   points: number;
   date: string;
   isOnline: boolean;
@@ -22,7 +22,7 @@ export default function TrainingHistoryPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState<Training | null>(null);
-  
+
   // フィルター・ソート状態
   const [categoryFilter, setCategoryFilter] = useState<string>('ALL');
   const [typeFilter, setTypeFilter] = useState<string>('ALL');
@@ -108,6 +108,9 @@ export default function TrainingHistoryPage() {
       case 'CATEGORY_A': return '1群';
       case 'CATEGORY_B': return '2群';
       case 'CATEGORY_C': return '3群';
+      case 'CATEGORY_D': return '4群';
+      case 'CATEGORY_E': return '5群';
+      case 'CATEGORY_F': return '6群';
       default: return category;
     }
   };
@@ -117,6 +120,9 @@ export default function TrainingHistoryPage() {
       case 'CATEGORY_A': return 'bg-blue-100 text-blue-700 border-blue-200';
       case 'CATEGORY_B': return 'bg-purple-100 text-purple-700 border-purple-200';
       case 'CATEGORY_C': return 'bg-pink-100 text-pink-700 border-pink-200';
+      case 'CATEGORY_D': return 'bg-teal-100 text-teal-700 border-teal-200';
+      case 'CATEGORY_E': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'CATEGORY_F': return 'bg-rose-100 text-rose-700 border-rose-200';
       default: return 'bg-gray-100 text-gray-700 border-gray-200';
     }
   };
@@ -164,6 +170,9 @@ export default function TrainingHistoryPage() {
               <option value="CATEGORY_A">1群</option>
               <option value="CATEGORY_B">2群</option>
               <option value="CATEGORY_C">3群</option>
+              <option value="CATEGORY_D">4群</option>
+              <option value="CATEGORY_E">5群</option>
+              <option value="CATEGORY_F">6群</option>
             </select>
           </div>
 
@@ -303,7 +312,7 @@ export default function TrainingHistoryPage() {
       </div>
 
       {/* 研修追加モーダル */}
-      <AddTrainingModal 
+      <AddTrainingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={fetchTrainings}

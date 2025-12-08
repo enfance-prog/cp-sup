@@ -4,7 +4,8 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { SignOutButton, useUser } from '@clerk/nextjs';
-import { FaHome, FaUser, FaBook, FaSignOutAlt, FaTimes, FaSync } from 'react-icons/fa';
+import { FaHome, FaUser, FaBook, FaSignOutAlt, FaTimes, FaSync, FaEnvelope } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -125,8 +126,8 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                     <Link
                       href={item.href}
                       className={`flex items-center rounded-lg px-4 py-3 transition-all ${pathname === item.href
-                          ? 'bg-white/20 text-white shadow-lg'
-                          : 'text-primary-50 hover:bg-white/10 hover:text-white'
+                        ? 'bg-white/20 text-white shadow-lg'
+                        : 'text-primary-50 hover:bg-white/10 hover:text-white'
                         }`}
                       onClick={() => setIsOpen(false)}
                     >
@@ -138,6 +139,48 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
               ))}
             </ul>
           </nav>
+
+          {/* サポートセクション */}
+          <div className="px-4 py-4 border-t border-primary-500/30">
+            <p className="text-xs text-primary-200 mb-3 px-2 font-medium">サポート・ご要望</p>
+            <div className="space-y-2">
+              <a
+                href="https://lin.ee/UnZgvAz"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 px-3 py-2 bg-[#06C755]/10 hover:bg-[#06C755]/20 text-[#06C755] rounded-lg transition-colors group"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#06C755] flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition-transform">
+                  <span className="text-lg font-bold">L</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-white group-hover:text-[#06C755] transition-colors">公式LINEで相談</p>
+                  <p className="text-[10px] text-primary-200 truncate">バグ報告・機能要望も</p>
+                </div>
+              </a>
+
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                <a
+                  href="https://x.com/enfance_222"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center justify-center p-2 rounded-lg bg-black/20 hover:bg-black/40 text-white/70 hover:text-white transition-all"
+                  title="X (Twitter) DM"
+                >
+                  <FaXTwitter className="w-5 h-5 mb-1" />
+                  <span className="text-[10px]">DMで相談</span>
+                </a>
+                <a
+                  href="mailto:enfance.inc@gmail.com"
+                  className="flex flex-col items-center justify-center p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white/70 hover:text-white transition-all"
+                  title="メールで相談"
+                >
+                  <FaEnvelope className="w-5 h-5 mb-1" />
+                  <span className="text-[10px]">Email</span>
+                </a>
+              </div>
+            </div>
+          </div>
 
           {/* サイドバーフッター */}
           <div className="border-t border-primary-500/30 p-4">

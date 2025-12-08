@@ -182,6 +182,7 @@ export default function EditPlannedTrainingModal({
               </label>
               <input
                 type="date"
+                lang="ja-JP"
                 value={formData.trainingDate}
                 onChange={(e) => setFormData({ ...formData, trainingDate: e.target.value })}
                 className="input-field"
@@ -194,6 +195,7 @@ export default function EditPlannedTrainingModal({
               <label className="form-label">申込期日</label>
               <input
                 type="date"
+                lang="ja-JP"
                 value={formData.applicationDeadline}
                 onChange={(e) => setFormData({ ...formData, applicationDeadline: e.target.value })}
                 className="input-field"
@@ -205,6 +207,7 @@ export default function EditPlannedTrainingModal({
               <label className="form-label">支払期日</label>
               <input
                 type="date"
+                lang="ja-JP"
                 value={formData.paymentDeadline}
                 onChange={(e) => setFormData({ ...formData, paymentDeadline: e.target.value })}
                 className="input-field"

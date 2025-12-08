@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { FaPlus, FaChartLine, FaWifi, FaUserCircle, FaClipboardList, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { FaPlus, FaChartLine, FaWifi, FaUserCircle, FaClipboardList, FaCheckCircle, FaExclamationCircle, FaChevronDown } from 'react-icons/fa';
 import AddTrainingModal from '@/components/dashboard/AddTrainingModal';
 import EditTrainingModal from '@/components/dashboard/EditTrainingModal';
 import TrainingList from '@/components/dashboard/TrainingList';
@@ -41,6 +41,9 @@ interface Stats {
   categoryA: number;
   categoryB: number;
   categoryC: number;
+  categoryD: number;
+  categoryE: number;
+  categoryF: number;
   onlinePoints: number;
   inPersonPoints: number;
 }
@@ -59,21 +62,27 @@ export default function DashboardPage() {
     categoryA: 0,
     categoryB: 0,
     categoryC: 0,
+    categoryD: 0,
+    categoryE: 0,
+    categoryF: 0,
     onlinePoints: 0,
     inPersonPoints: 0,
   });
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<Toast | null>(null);
-  
+
   // 研修履歴のモーダル
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedTraining, setSelectedTraining] = useState<Training | null>(null);
-  
+
   // 受講予定のモーダル
   const [isPlannedModalOpen, setIsPlannedModalOpen] = useState(false);
   const [isEditPlannedModalOpen, setIsEditPlannedModalOpen] = useState(false);
   const [selectedPlannedTraining, setSelectedPlannedTraining] = useState<PlannedTraining | null>(null);
+
+  // ポイント詳細の展開状態
+  const [isPointExpanded, setIsPointExpanded] = useState(false);
 
   // カレンダー連携の結果を表示
   useEffect(() => {
@@ -144,22 +153,32 @@ export default function DashboardPage() {
     const stats = trainings.reduce(
       (acc, training) => {
         acc.totalPoints += training.points;
-        
-        if (training.category === 'CATEGORY_A') acc.categoryA += training.points;
-        if (training.category === 'CATEGORY_B') acc.categoryB += training.points;
-        if (training.category === 'CATEGORY_C') acc.categoryC += training.points;
-        
+
+        switch (training.category) {
+          case 'CATEGORY_A': acc.categoryA += training.points; break;
+          case 'CATEGORY_B': acc.categoryB += training.points; break;
+          case 'CATEGORY_C': acc.categoryC += training.points; break;
+          case 'CATEGORY_D': acc.categoryD += training.points; break;
+          case 'CATEGORY_E': acc.categoryE += training.points; break;
+          case 'CATEGORY_F': acc.categoryF += training.points; break;
+        }
+
         if (training.isOnline) {
           acc.onlinePoints += training.points;
         } else {
           acc.inPersonPoints += training.points;
         }
-        
+
         return acc;
       },
-      { totalPoints: 0, categoryA: 0, categoryB: 0, categoryC: 0, onlinePoints: 0, inPersonPoints: 0 }
+      {
+        totalPoints: 0,
+        categoryA: 0, categoryB: 0, categoryC: 0,
+        categoryD: 0, categoryE: 0, categoryF: 0,
+        onlinePoints: 0, inPersonPoints: 0
+      }
     );
-    
+
     setStats(stats);
   };
 
@@ -248,11 +267,10 @@ export default function DashboardPage() {
       {/* トースト通知 */}
       {toast && (
         <div
-          className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg animate-slide-up ${
-            toast.type === 'success'
-              ? 'bg-green-50 border border-green-200 text-green-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
-          }`}
+          className={`fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg animate-slide-up ${toast.type === 'success'
+            ? 'bg-green-50 border border-green-200 text-green-800'
+            : 'bg-red-50 border border-red-200 text-red-800'
+            }`}
         >
           {toast.type === 'success' ? (
             <FaCheckCircle className="text-green-600" />
@@ -282,10 +300,11 @@ export default function DashboardPage() {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="btn-primary flex items-center gap-2"
+            className="btn-primary flex items-center gap-2 px-6 py-3 sm:px-8 sm:py-4"
           >
             <FaPlus />
-            研修を追加
+            <span className="hidden sm:inline">研修を追加</span>
+            <span className="sm:hidden">追加</span>
           </button>
         </div>
       </div>
@@ -296,50 +315,45 @@ export default function DashboardPage() {
         </div>
       ) : (
         <>
-          {/* ポイント集計カード */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* 合計ポイント */}
-            <div className="tool-card bg-gradient-to-br from-primary-500 to-primary-600 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-primary-100 text-sm font-medium mb-1">合計ポイント</p>
-                  <p className="text-3xl font-bold">{stats.totalPoints}pt</p>
+          {/* ポイント集計バナー */}
+          <div className="tool-card bg-gradient-to-r from-gray-800 to-gray-900 text-white overflow-hidden transition-all duration-300 ease-in-out p-0">
+            {/* 常時表示エリア（合計ポイント） */}
+            <div
+              className="p-6 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={() => setIsPointExpanded(!isPointExpanded)}
+            >
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/10 rounded-xl">
+                  <FaChartLine className="text-2xl text-primary-300" />
                 </div>
-                <FaChartLine className="text-4xl text-primary-200" />
+                <div>
+                  <p className="text-gray-400 text-xs font-medium tracking-wider uppercase mb-1">Total Points</p>
+                  <p className="text-3xl font-bold tracking-tight">{stats.totalPoints}<span className="text-lg text-gray-400 ml-1 font-normal">pt</span></p>
+                </div>
+              </div>
+              <div className={`p-2 rounded-full transition-all duration-300 ${isPointExpanded ? 'bg-white/20 rotate-180' : 'bg-white/5'}`}>
+                <FaChevronDown className="text-gray-300" />
               </div>
             </div>
 
-            {/* 1群 */}
-            <div className="tool-card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm font-medium mb-1">1群</p>
-                  <p className="text-3xl font-bold">{stats.categoryA}pt</p>
+            {/* 展開エリア（カテゴリー別） */}
+            <div
+              className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-px bg-gray-700/50 transition-all duration-500 ease-in-out ${isPointExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+            >
+              {[
+                { label: '1群', points: stats.categoryA, bg: 'bg-blue-500/10 hover:bg-blue-500/20', text: 'text-blue-300' },
+                { label: '2群', points: stats.categoryB, bg: 'bg-purple-500/10 hover:bg-purple-500/20', text: 'text-purple-300' },
+                { label: '3群', points: stats.categoryC, bg: 'bg-pink-500/10 hover:bg-pink-500/20', text: 'text-pink-300' },
+                { label: '4群', points: stats.categoryD, bg: 'bg-teal-500/10 hover:bg-teal-500/20', text: 'text-teal-300' },
+                { label: '5群', points: stats.categoryE, bg: 'bg-amber-500/10 hover:bg-amber-500/20', text: 'text-amber-300' },
+                { label: '6群', points: stats.categoryF, bg: 'bg-rose-500/10 hover:bg-rose-500/20', text: 'text-rose-300' },
+              ].map((item, idx) => (
+                <div key={idx} className={`p-4 flex flex-col items-center justify-center ${item.bg} transition-colors border-t border-gray-700/50`}>
+                  <p className="text-gray-400 text-xs mb-1">{item.label}</p>
+                  <p className={`text-xl font-bold ${item.text}`}>{item.points}</p>
                 </div>
-                <FaUserCircle className="text-4xl text-blue-200" />
-              </div>
-            </div>
-
-            {/* 2群 */}
-            <div className="tool-card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm font-medium mb-1">2群</p>
-                  <p className="text-3xl font-bold">{stats.categoryB}pt</p>
-                </div>
-                <FaUserCircle className="text-4xl text-purple-200" />
-              </div>
-            </div>
-
-            {/* 3群 */}
-            <div className="tool-card bg-gradient-to-br from-pink-500 to-pink-600 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-pink-100 text-sm font-medium mb-1">3群</p>
-                  <p className="text-3xl font-bold">{stats.categoryC}pt</p>
-                </div>
-                <FaUserCircle className="text-4xl text-pink-200" />
-              </div>
+              ))}
             </div>
           </div>
 
@@ -355,7 +369,7 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <div className="progress-bar">
-                  <div 
+                  <div
                     className="progress-fill"
                     style={{ width: `${progressPercentage}%` }}
                   />
@@ -422,8 +436,8 @@ export default function DashboardPage() {
           <div className="tool-card">
             <h3 className="text-lg font-bold text-gray-800 mb-4">最近の研修履歴</h3>
             {recentTrainings.length > 0 ? (
-              <TrainingList 
-                trainings={recentTrainings} 
+              <TrainingList
+                trainings={recentTrainings}
                 onUpdate={fetchTrainings}
                 onEdit={handleEdit}
               />
@@ -438,7 +452,7 @@ export default function DashboardPage() {
       )}
 
       {/* 研修追加モーダル */}
-      <AddTrainingModal 
+      <AddTrainingModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={fetchTrainings}
