@@ -1,6 +1,6 @@
 'use client';
 
-import { FaWifi, FaTrash, FaEdit, FaCalendarAlt, FaYenSign, FaClock } from 'react-icons/fa';
+import { FaWifi, FaTrash, FaEdit, FaCalendarAlt, FaYenSign, FaClock, FaCheck } from 'react-icons/fa';
 import { format, differenceInDays } from 'date-fns';
 
 interface PlannedTraining {
@@ -25,6 +25,8 @@ interface PlannedTrainingListProps {
   onUpdate: () => void;
   onEdit?: (plannedTraining: PlannedTraining) => void;
   onCalendarSync?: (plannedTraining: PlannedTraining) => void;
+  isPast?: boolean;
+  onRegister?: (plannedTraining: PlannedTraining) => void;
 }
 
 export default function PlannedTrainingList({
@@ -32,6 +34,8 @@ export default function PlannedTrainingList({
   onUpdate,
   onEdit,
   onCalendarSync,
+  isPast = false,
+  onRegister,
 }: PlannedTrainingListProps) {
   const getCategoryLabel = (category: string) => {
     const labels: Record<string, string> = {
@@ -88,7 +92,7 @@ export default function PlannedTrainingList({
     if (!dateStr) return null;
     const days = getDaysUntil(dateStr);
     const formattedDate = format(new Date(dateStr), 'M/d');
-    
+
     let daysText = '';
     if (days < 0) {
       daysText = '（終了）';
@@ -199,22 +203,34 @@ export default function PlannedTrainingList({
                 </div>
               </div>
 
-              {/* アクションボタン */}
               <div className="flex items-center gap-1">
-                {/* カレンダー登録ボタン（Phase 3で実装） */}
-                {onCalendarSync && (
+                {isPast ? (
+                  // 期限切れの場合: 実績登録ボタン
                   <button
-                    onClick={() => onCalendarSync(pt)}
-                    className={`p-2 rounded-lg transition-colors ${
-                      pt.calendarSynced
+                    onClick={() => onRegister && onRegister(pt)}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors shadow-sm"
+                    title="実績として登録"
+                  >
+                    <FaCheck className="w-3 h-3" />
+                    <span className="hidden sm:inline">登録</span>
+                  </button>
+                ) : (
+                  // 通常: カレンダー登録ボタン
+                  onCalendarSync && (
+                    <button
+                      onClick={() => onCalendarSync(pt)}
+                      className={`p-2 rounded-lg transition-colors ${pt.calendarSynced
                         ? 'text-primary-600 bg-primary-50'
                         : 'text-gray-400 hover:text-primary-600 hover:bg-primary-50'
-                    }`}
-                    title={pt.calendarSynced ? 'カレンダー登録済み' : 'カレンダーに登録'}
-                  >
-                    <FaCalendarAlt className="w-4 h-4" />
-                  </button>
+                        }`}
+                      title={pt.calendarSynced ? 'カレンダー登録済み' : 'カレンダーに登録'}
+                    >
+                      <FaCalendarAlt className="w-4 h-4" />
+                    </button>
+                  )
                 )}
+
+                {/* 編集ボタン（共通） */}
                 {onEdit && (
                   <button
                     onClick={() => onEdit(pt)}
@@ -224,6 +240,8 @@ export default function PlannedTrainingList({
                     <FaEdit className="w-4 h-4" />
                   </button>
                 )}
+
+                {/* 削除ボタン（共通） */}
                 <button
                   onClick={() => handleDelete(pt.id)}
                   className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"

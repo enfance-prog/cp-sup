@@ -9,6 +9,8 @@ import TrainingList from '@/components/dashboard/TrainingList';
 import AddPlannedTrainingModal from '@/components/dashboard/AddPlannedTrainingModal';
 import EditPlannedTrainingModal from '@/components/dashboard/EditPlannedTrainingModal';
 import PlannedTrainingList from '@/components/dashboard/PlannedTrainingList';
+import PastTrainingDialog from '@/components/dashboard/PastTrainingDialog';
+
 
 interface Training {
   id: string;
@@ -81,6 +83,9 @@ export default function DashboardPage() {
   const [isEditPlannedModalOpen, setIsEditPlannedModalOpen] = useState(false);
   const [selectedPlannedTraining, setSelectedPlannedTraining] = useState<PlannedTraining | null>(null);
 
+  // 受講予定からの実績登録（セミオートメーション）
+  const [registerSource, setRegisterSource] = useState<PlannedTraining | null>(null);
+
   // ポイント詳細の展開状態
   const [isPointExpanded, setIsPointExpanded] = useState(false);
 
@@ -133,6 +138,10 @@ export default function DashboardPage() {
       const response = await fetch('/api/planned-trainings');
       if (response.ok) {
         const data = await response.json();
+        // 研修日が新しい順にソート（期限切れも含む全データ）
+        data.sort((a: PlannedTraining, b: PlannedTraining) =>
+          new Date(a.trainingDate).getTime() - new Date(b.trainingDate).getTime()
+        );
         setPlannedTrainings(data);
       }
     } catch (error) {
@@ -251,13 +260,32 @@ export default function DashboardPage() {
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 5);
 
-  // 今後の予定（研修日が今日以降のもの）
   const upcomingPlannedTrainings = plannedTrainings.filter(pt => {
     const trainingDate = new Date(pt.trainingDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return trainingDate >= today;
   });
+
+  // 期限切れの予定（研修日が昨日以前）
+  const pastPlannedTrainings = plannedTrainings.filter(pt => {
+    const trainingDate = new Date(pt.trainingDate);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return trainingDate < today;
+  });
+
+  // セミオート登録ハンドラ
+  const handleRegisterFromPlanned = (pt: PlannedTraining) => {
+    setRegisterSource(pt);
+    setIsModalOpen(true);
+  };
+
+  // PastTrainingDialog完了ハンドラ
+  const handlePastTrainingSuccess = () => {
+    fetchTrainings();
+    fetchPlannedTrainings();
+  };
 
   const targetPoints = 15;
   const progressPercentage = Math.min((stats.totalPoints / targetPoints) * 100, 100);
@@ -432,7 +460,33 @@ export default function DashboardPage() {
             )}
           </div>
 
+          {/* 期限切れの受講予定（アラート未対応分） */}
+          {pastPlannedTrainings.length > 0 && (
+            <div className="tool-card border-red-100 bg-red-50/30">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                  <FaExclamationCircle className="text-red-500" />
+                  期限切れの受講予定
+                </h3>
+                <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">
+                  未処理 {pastPlannedTrainings.length}件
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-4">
+                研修日が過ぎている予定があります。「登録」ボタンから実績として登録するか、不要な場合は削除してください。
+              </p>
+              <PlannedTrainingList
+                plannedTrainings={pastPlannedTrainings}
+                onUpdate={fetchPlannedTrainings}
+                onEdit={handleEditPlanned} // 編集も可能にする
+                onRegister={handleRegisterFromPlanned}
+                isPast={true}
+              />
+            </div>
+          )}
+
           {/* 最近の研修履歴 */}
+
           <div className="tool-card">
             <h3 className="text-lg font-bold text-gray-800 mb-4">最近の研修履歴</h3>
             {recentTrainings.length > 0 ? (
@@ -454,8 +508,19 @@ export default function DashboardPage() {
       {/* 研修追加モーダル */}
       <AddTrainingModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setRegisterSource(null);
+        }}
         onSuccess={fetchTrainings}
+        initialData={registerSource ? {
+          name: registerSource.name,
+          category: registerSource.category || 'CATEGORY_A',
+          points: registerSource.points || 1,
+          date: new Date(registerSource.trainingDate),
+          isOnline: registerSource.isOnline,
+        } : undefined}
+        plannedTrainingId={registerSource?.id}
       />
 
       {/* 研修編集モーダル */}
@@ -485,6 +550,20 @@ export default function DashboardPage() {
           setSelectedPlannedTraining(null);
         }}
         onSuccess={fetchPlannedTrainings}
+      />
+
+      {/* 期限切れ研修の一括処理ダイアログ */}
+      <PastTrainingDialog
+        isOpen={pastPlannedTrainings.length > 0 && !isModalOpen && !isEditModalOpen && !registerSource}
+        plannedTrainings={pastPlannedTrainings}
+        onClose={() => {
+          // 何もしない（閉じるボタンで一つずつ処理するか、全て処理完了するまで）
+          // UI的には個別に閉じる（スキップする）必要があるが、
+          // 現状のPastTrainingDialogはモーダル全体を閉じるXボタンがある
+          // ここではfetchを呼んでリフレッシュすることで状態を最新にする
+          fetchPlannedTrainings();
+        }}
+        onSuccess={handlePastTrainingSuccess}
       />
     </div>
   );

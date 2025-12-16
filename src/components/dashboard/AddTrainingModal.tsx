@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaTimes, FaWifi, FaCheck } from 'react-icons/fa';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { ja } from 'date-fns/locale/ja';
@@ -11,9 +11,21 @@ interface AddTrainingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  /* 
+   * initialData: 受講予定から登録する場合の初期値
+   * plannedTrainingId: 登録成功時に削除する受講予定のID
+   */
+  initialData?: {
+    name: string;
+    category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F';
+    points: number;
+    date: Date;
+    isOnline: boolean;
+  };
+  plannedTrainingId?: string;
 }
 
-export default function AddTrainingModal({ isOpen, onClose, onSuccess }: AddTrainingModalProps) {
+export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialData, plannedTrainingId }: AddTrainingModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F',
@@ -24,6 +36,22 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess }: AddTrai
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // 初期値が変更されたら反映
+  useEffect(() => {
+    if (initialData && isOpen) {
+      setFormData(initialData);
+    } else if (isOpen && !initialData) {
+      // 通常のオープンの場合はリセット
+      setFormData({
+        name: '',
+        category: 'CATEGORY_A',
+        points: 1,
+        date: new Date(),
+        isOnline: false,
+      });
+    }
+  }, [initialData, isOpen]);
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,29 +60,39 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess }: AddTrai
     setError('');
 
     try {
+      // 1. 研修実績の登録
       const response = await fetch('/api/trainings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        onSuccess();
-        onClose();
-        setFormData({
-          name: '',
-          category: 'CATEGORY_A',
-          points: 1,
-
-          date: new Date(),
-          isOnline: false,
-        });
-      } else {
+      if (!response.ok) {
         const data = await response.json();
-        setError(data.error || '研修の登録に失敗しました');
+        throw new Error(data.error || '研修の登録に失敗しました');
       }
-    } catch {
-      setError('研修の登録に失敗しました');
+
+      // 2. 受講予定からの登録だった場合、元の受講予定を削除
+      if (plannedTrainingId) {
+        await fetch(`/api/planned-trainings/${plannedTrainingId}`, {
+          method: 'DELETE',
+        });
+      }
+
+      onSuccess();
+      onClose();
+
+      // フォームをリセット（次は新規かもしれないので）
+      setFormData({
+        name: '',
+        category: 'CATEGORY_A',
+        points: 1,
+        date: new Date(),
+        isOnline: false,
+      });
+
+    } catch (err: any) {
+      setError(err.message || '処理に失敗しました');
     } finally {
       setLoading(false);
     }
