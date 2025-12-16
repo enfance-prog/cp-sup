@@ -460,30 +460,45 @@ export default function DashboardPage() {
             )}
           </div>
 
-          {/* 期限切れの受講予定（アラート未対応分） */}
-          {pastPlannedTrainings.length > 0 && (
-            <div className="tool-card border-red-100 bg-red-50/30">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                  <FaExclamationCircle className="text-red-500" />
-                  期限切れの受講予定
-                </h3>
+          {/* 期限切れの受講予定（常時表示） */}
+          <div className={`tool-card ${pastPlannedTrainings.length > 0 ? 'border-red-100 bg-red-50/30' : ''}`}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                <FaExclamationCircle className={pastPlannedTrainings.length > 0 ? "text-red-500" : "text-gray-400"} />
+                期限切れの受講予定
+              </h3>
+              {pastPlannedTrainings.length > 0 ? (
                 <span className="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">
                   未処理 {pastPlannedTrainings.length}件
                 </span>
-              </div>
-              <p className="text-sm text-gray-600 mb-4">
-                研修日が過ぎている予定があります。「登録」ボタンから実績として登録するか、不要な場合は削除してください。
-              </p>
-              <PlannedTrainingList
-                plannedTrainings={pastPlannedTrainings}
-                onUpdate={fetchPlannedTrainings}
-                onEdit={handleEditPlanned} // 編集も可能にする
-                onRegister={handleRegisterFromPlanned}
-                isPast={true}
-              />
+              ) : (
+                <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full flex items-center gap-1">
+                  <FaCheckCircle className="w-3 h-3" />
+                  未処理なし
+                </span>
+              )}
             </div>
-          )}
+
+            {pastPlannedTrainings.length > 0 ? (
+              <>
+                <p className="text-sm text-gray-600 mb-4">
+                  研修日が過ぎている予定があります。「登録」ボタンから実績として登録するか、不要な場合は削除してください。
+                </p>
+                <PlannedTrainingList
+                  plannedTrainings={pastPlannedTrainings}
+                  onUpdate={fetchPlannedTrainings}
+                  onEdit={handleEditPlanned} // 編集も可能にする
+                  onRegister={handleRegisterFromPlanned}
+                  isPast={true}
+                />
+              </>
+            ) : (
+              <div className="text-center py-6 text-gray-500 text-sm">
+                期限切れの受講予定はありません。<br />
+                全ての受講予定が適切に管理されています。
+              </div>
+            )}
+          </div>
 
           {/* 最近の研修履歴 */}
 
