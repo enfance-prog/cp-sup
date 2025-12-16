@@ -232,7 +232,7 @@ export default function PastTrainingDialog({
                 onClick={() => setIsEditing(false)}
                 className="btn-secondary w-full"
               >
-                編集を終了
+                編集をキャンセル
               </button>
             </div>
           ) : (
@@ -270,47 +270,79 @@ export default function PastTrainingDialog({
                     )}
                   </div>
                 </div>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="text-gray-400 hover:text-primary-600 transition-colors p-2 rounded-lg hover:bg-white"
-                  title="編集"
-                >
-                  <FaEdit className="w-4 h-4" />
-                </button>
+                {(!currentTraining.category || !currentTraining.points) && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded p-3 text-xs text-yellow-800">
+                    群またはポイントが未入力です。「編集して登録」から入力することをお勧めします。
+                  </div>
+                )}
               </div>
-
-              {(!currentTraining.category || !currentTraining.points) && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded p-3 text-xs text-yellow-800">
-                  群またはポイントが未入力です。「編集する」ボタンから入力してください。
-                </div>
-              )}
             </div>
           )}
 
           {/* アクションボタン */}
-          <div className="flex gap-3 pt-2">
-            <button
-              onClick={handleDeleteOnly}
-              className="btn-secondary flex-1 flex items-center justify-center gap-2"
-              disabled={submitting}
-            >
-              <FaTrash />
-              登録しないで削除
-            </button>
-            <button
-              onClick={handleRegister}
-              className="btn-primary flex-1 flex items-center justify-center gap-2"
-              disabled={submitting || !currentTraining.category || !currentTraining.points}
-            >
-              {submitting ? (
-                '処理中...'
-              ) : (
-                <>
+          <div className="flex flex-col gap-3 pt-4 border-t border-gray-100">
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={handleDeleteOnly}
+                className="py-3 px-4 rounded-lg text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                disabled={submitting}
+              >
+                <FaTrash />
+                登録しないで削除
+              </button>
+
+              <button
+                onClick={() => setIsEditing(true)}
+                className={`py-3 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2
+                  ${isEditing
+                    ? 'bg-primary-100 text-primary-700 pointer-events-none'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                disabled={submitting}
+              >
+                <FaEdit />
+                {isEditing ? '収集中...' : '編集して登録'}
+              </button>
+            </div>
+
+            {/* メインアクションボタン */}
+            {isEditing ? (
+              <button
+                onClick={handleRegister}
+                className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                disabled={submitting}
+              >
+                {submitting ? '処理中...' : '変更内容で登録する'}
+              </button>
+            ) : (
+              /* データが揃っている場合は「登録する」、そうでない場合は「後で」 */
+              (currentTraining.category && currentTraining.points) ? (
+                <button
+                  onClick={handleRegister}
+                  className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                  disabled={submitting}
+                >
                   <FaCheck />
-                  登録する
-                </>
-              )}
-            </button>
+                  {submitting ? '処理中...' : '登録する'}
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    // スキップ処理
+                    if (currentIndex < plannedTrainings.length - 1) {
+                      setCurrentIndex(currentIndex + 1);
+                      setIsEditing(false);
+                    } else {
+                      onSuccess(); // 完了扱いにするかは微妙だが、ダイアログを閉じる
+                      onClose();
+                    }
+                  }}
+                  className="w-full py-3.5 px-6 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 shadow-sm transition-all flex items-center justify-center gap-2"
+                  disabled={submitting}
+                >
+                  後でする（スキップ）
+                </button>
+              )
+            )}
           </div>
         </div>
       </div>

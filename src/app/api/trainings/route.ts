@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         category: category || null,
-        points: points ? parseInt(points) : null,
+        points: points ? parseInt(points) : null as any,
         date: trainingDate,
         isOnline: isOnline || false,
       },
