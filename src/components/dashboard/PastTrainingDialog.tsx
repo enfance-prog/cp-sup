@@ -238,7 +238,7 @@ export default function PastTrainingDialog({
           ) : (
             /* 表示モード */
             <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-              <div className="flex items-start justify-between">
+              <div className="space-y-3">
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-800 text-lg mb-2">
                     {currentTraining.name}
@@ -270,6 +270,7 @@ export default function PastTrainingDialog({
                     )}
                   </div>
                 </div>
+
                 {(!currentTraining.category || !currentTraining.points) && (
                   <div className="bg-yellow-50 border border-yellow-200 rounded p-3 text-xs text-yellow-800">
                     群またはポイントが未入力です。「編集して登録」から入力することをお勧めします。
@@ -284,7 +285,7 @@ export default function PastTrainingDialog({
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleDeleteOnly}
-                className="py-3 px-4 rounded-lg text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                className="py-3 px-4 rounded-full text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 hover:shadow-md transform transition-all flex items-center justify-center gap-2"
                 disabled={submitting}
               >
                 <FaTrash />
@@ -293,10 +294,10 @@ export default function PastTrainingDialog({
 
               <button
                 onClick={() => setIsEditing(true)}
-                className={`py-3 px-4 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2
+                className={`py-3 px-4 rounded-full text-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md transform
                   ${isEditing
                     ? 'bg-primary-100 text-primary-700 pointer-events-none'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50'}`}
                 disabled={submitting}
               >
                 <FaEdit />
@@ -308,7 +309,7 @@ export default function PastTrainingDialog({
             {isEditing ? (
               <button
                 onClick={handleRegister}
-                className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                className="w-full py-3.5 px-6 rounded-full font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                 disabled={submitting}
               >
                 {submitting ? '処理中...' : '変更内容で登録する'}
@@ -318,7 +319,7 @@ export default function PastTrainingDialog({
               (currentTraining.category && currentTraining.points) ? (
                 <button
                   onClick={handleRegister}
-                  className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 px-6 rounded-full font-bold text-white bg-primary-600 hover:bg-primary-700 shadow-md hover:shadow-lg transform active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                   disabled={submitting}
                 >
                   <FaCheck />
@@ -336,7 +337,7 @@ export default function PastTrainingDialog({
                       onClose();
                     }
                   }}
-                  className="w-full py-3.5 px-6 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 shadow-sm transition-all flex items-center justify-center gap-2"
+                  className="w-full py-3.5 px-6 rounded-full font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2"
                   disabled={submitting}
                 >
                   後でする（スキップ）
