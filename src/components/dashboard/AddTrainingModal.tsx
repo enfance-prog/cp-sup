@@ -12,13 +12,14 @@ interface AddTrainingModalProps {
   onClose: () => void;
   onSuccess: () => void;
   /* 
+  /* 
    * initialData: 受講予定から登録する場合の初期値
    * plannedTrainingId: 登録成功時に削除する受講予定のID
    */
   initialData?: {
     name: string;
-    category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F';
-    points: number;
+    category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | null;
+    points: number | null;
     date: Date;
     isOnline: boolean;
   };
@@ -28,8 +29,8 @@ interface AddTrainingModalProps {
 export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialData, plannedTrainingId }: AddTrainingModalProps) {
   const [formData, setFormData] = useState({
     name: '',
-    category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F',
-    points: 1,
+    category: '' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | '',
+    points: 1 as number | '',
     date: new Date(),
     isOnline: false,
   });
@@ -39,12 +40,18 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
   // 初期値が変更されたら反映
   useEffect(() => {
     if (initialData && isOpen) {
-      setFormData(initialData);
+      setFormData({
+        name: initialData.name,
+        category: initialData.category || '',
+        points: initialData.points === null ? '' : initialData.points,
+        date: initialData.date,
+        isOnline: initialData.isOnline,
+      });
     } else if (isOpen && !initialData) {
       // 通常のオープンの場合はリセット
       setFormData({
         name: '',
-        category: 'CATEGORY_A',
+        category: '',
         points: 1,
         date: new Date(),
         isOnline: false,
@@ -79,13 +86,15 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
         });
       }
 
-      onSuccess();
+      const createdTraining = await response.json().then(data => data.training);
+      // @ts-expect-error Parent expects Training type but logic is safe
+      onSuccess(createdTraining);
       onClose();
 
       // フォームをリセット（次は新規かもしれないので）
       setFormData({
         name: '',
-        category: 'CATEGORY_A',
+        category: '',
         points: 1,
         date: new Date(),
         isOnline: false,
@@ -141,13 +150,13 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
 
           {/* カテゴリー */}
           <div>
-            <label className="form-label">カテゴリー（群）</label>
+            <label className="form-label">カテゴリー（群） <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
             <select
               value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' })}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
               className="select-field"
-              required
             >
+              <option value="">未選択</option>
               <option value="CATEGORY_A">1群</option>
               <option value="CATEGORY_B">2群</option>
               <option value="CATEGORY_C">3群</option>
@@ -159,15 +168,14 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
 
           {/* ポイント */}
           <div>
-            <label className="form-label">取得ポイント</label>
+            <label className="form-label">取得ポイント <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
             <input
               type="number"
               min="1"
               max="10"
               value={formData.points}
-              onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) })}
+              onChange={(e) => setFormData({ ...formData, points: e.target.value === '' ? '' : parseInt(e.target.value) })}
               className="input-field"
-              required
             />
           </div>
 

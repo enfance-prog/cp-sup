@@ -5,10 +5,10 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const { userId } = await auth();
-    
+
     console.log('=== DEBUG: trainings API ===');
     console.log('Clerk userId:', userId);
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -26,7 +26,7 @@ export async function GET() {
         select: { id: true, clerkId: true, name: true }
       });
       console.log('All users in DB:', allUsers);
-      
+
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
@@ -65,7 +65,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     const { name, category, points, date, isOnline } = body;
 
     // バリデーション
-    if (!name || !category || !points || !date) {
+    if (!name || !date) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -118,8 +118,8 @@ export async function POST(request: NextRequest) {
     const training = await prisma.training.create({
       data: {
         name,
-        category,
-        points: parseInt(points),
+        category: category || null,
+        points: points ? parseInt(points) : null as any,
         date: trainingDate,
         isOnline: isOnline || false,
       },

@@ -15,8 +15,8 @@ import PastTrainingDialog from '@/components/dashboard/PastTrainingDialog';
 interface Training {
   id: string;
   name: string;
-  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F';
-  points: number;
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | null;
+  points: number | null;
   date: string;
   isOnline: boolean;
 }
@@ -161,21 +161,24 @@ export default function DashboardPage() {
   const calculateStats = (trainings: Training[]) => {
     const stats = trainings.reduce(
       (acc, training) => {
-        acc.totalPoints += training.points;
+        const points = training.points || 0; // ポイント未定は0計算
+        acc.totalPoints += points;
 
-        switch (training.category) {
-          case 'CATEGORY_A': acc.categoryA += training.points; break;
-          case 'CATEGORY_B': acc.categoryB += training.points; break;
-          case 'CATEGORY_C': acc.categoryC += training.points; break;
-          case 'CATEGORY_D': acc.categoryD += training.points; break;
-          case 'CATEGORY_E': acc.categoryE += training.points; break;
-          case 'CATEGORY_F': acc.categoryF += training.points; break;
+        if (training.category) {
+          switch (training.category) {
+            case 'CATEGORY_A': acc.categoryA += points; break;
+            case 'CATEGORY_B': acc.categoryB += points; break;
+            case 'CATEGORY_C': acc.categoryC += points; break;
+            case 'CATEGORY_D': acc.categoryD += points; break;
+            case 'CATEGORY_E': acc.categoryE += points; break;
+            case 'CATEGORY_F': acc.categoryF += points; break;
+          }
         }
 
         if (training.isOnline) {
-          acc.onlinePoints += training.points;
+          acc.onlinePoints += points;
         } else {
-          acc.inPersonPoints += training.points;
+          acc.inPersonPoints += points;
         }
 
         return acc;
@@ -282,9 +285,29 @@ export default function DashboardPage() {
   };
 
   // PastTrainingDialog完了ハンドラ
-  const handlePastTrainingSuccess = () => {
-    fetchTrainings();
+  const handlePastTrainingSuccess = (newTraining?: Training) => {
+    handleTrainingAdded(newTraining);
     fetchPlannedTrainings();
+  };
+
+  // 研修追加後の処理（データ不足チェック）
+  const handleTrainingAdded = (newTraining?: Training) => {
+    fetchTrainings();
+
+    if (newTraining) {
+      // 必須項目（ポイント、カテゴリー）が欠けているかチェック
+      const isIncomplete = !newTraining.points || !newTraining.category;
+
+      if (isIncomplete) {
+        if (confirm('登録されましたが、情報（群、ポイントなど）が不足しています。\nすぐに修正しますか？\n（「キャンセル」を押すと後で修正できます）')) {
+          // すぐに修正する場合：編集モーダルを開く
+          setSelectedTraining(newTraining);
+          setIsEditModalOpen(true);
+        }
+      } else {
+        setToast({ type: 'success', message: '研修を登録しました' });
+      }
+    }
   };
 
   const targetPoints = 15;

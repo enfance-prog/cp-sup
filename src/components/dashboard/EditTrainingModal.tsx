@@ -10,8 +10,8 @@ registerLocale('ja', ja);
 interface Training {
   id: string;
   name: string;
-  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F';
-  points: number;
+  category: 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | null;
+  points: number | null;
   date: string;
   isOnline: boolean;
 }
@@ -26,25 +26,24 @@ interface EditTrainingModalProps {
 export default function EditTrainingModal({ isOpen, training, onClose, onSuccess }: EditTrainingModalProps) {
   const [formData, setFormData] = useState({
     name: '',
-    category: 'CATEGORY_A' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F',
-    points: 0,
-
+    category: '' as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | '',
+    points: '' as number | '',
     date: new Date(),
     isOnline: false,
   });
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (training) {
+    if (training && isOpen) {
       setFormData({
         name: training.name,
-        category: training.category,
-        points: training.points,
+        category: training.category || '',
+        points: training.points === null ? '' : training.points,
         date: new Date(training.date),
         isOnline: training.isOnline,
       });
     }
-  }, [training]);
+  }, [training, isOpen]);
 
   if (!isOpen || !training) return null;
 
@@ -53,10 +52,16 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
     setSubmitting(true);
 
     try {
+      const payload = {
+        ...formData,
+        points: formData.points === '' ? null : formData.points,
+        category: formData.category === '' ? null : formData.category,
+      };
+
       const response = await fetch(`/api/trainings/${training.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -97,15 +102,15 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
               required
             />
           </div>
-
+          {/* カテゴリー */}
           <div>
-            <label className="form-label">カテゴリー</label>
+            <label className="form-label">カテゴリー（群） <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
             <select
               value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' })}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value as any })}
               className="select-field"
-              required
             >
+              <option value="">未選択</option>
               <option value="CATEGORY_A">1群</option>
               <option value="CATEGORY_B">2群</option>
               <option value="CATEGORY_C">3群</option>
@@ -114,17 +119,16 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
               <option value="CATEGORY_F">6群</option>
             </select>
           </div>
-
+          {/* ポイント */}
           <div>
-            <label className="form-label">ポイント</label>
+            <label className="form-label">取得ポイント <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
             <input
               type="number"
-              min="0"
-              max="20"
+              min="1"
+              max="10"
               value={formData.points}
-              onChange={(e) => setFormData({ ...formData, points: parseInt(e.target.value) || 0 })}
+              onChange={(e) => setFormData({ ...formData, points: e.target.value === '' ? '' : parseInt(e.target.value) })}
               className="input-field"
-              required
             />
           </div>
 

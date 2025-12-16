@@ -39,8 +39,8 @@ model Certification {
 model Training {
   id          String               @id @default(cuid())
   name        String
-  category    Category
-  points      Int
+  category    Category?
+  points      Int?
   date        DateTime
   createdAt   DateTime             @default(now())
   updatedAt   DateTime             @updatedAt

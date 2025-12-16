@@ -6,8 +6,8 @@ import { format } from "date-fns";
 interface Training {
   id: string;
   name: string;
-  category: "CATEGORY_A" | "CATEGORY_B" | "CATEGORY_C" | "CATEGORY_D" | "CATEGORY_E" | "CATEGORY_F";
-  points: number;
+  category: "CATEGORY_A" | "CATEGORY_B" | "CATEGORY_C" | "CATEGORY_D" | "CATEGORY_E" | "CATEGORY_F" | null;
+  points: number | null;
   date: string;
   isOnline: boolean;
 }
@@ -23,42 +23,28 @@ export default function TrainingList({
   onUpdate,
   onEdit,
 }: TrainingListProps) {
-  const getCategoryLabel = (category: string) => {
-    switch (category) {
-      case "CATEGORY_A":
-        return "1群";
-      case "CATEGORY_B":
-        return "2群";
-      case "CATEGORY_C":
-        return "3群";
-      case "CATEGORY_D":
-        return "4群";
-      case "CATEGORY_E":
-        return "5群";
-      case "CATEGORY_F":
-        return "6群";
-      default:
-        return category;
-    }
+  const getCategoryLabel = (category: string | null) => {
+    const labels: Record<string, string> = {
+      'CATEGORY_A': '1群',
+      'CATEGORY_B': '2群',
+      'CATEGORY_C': '3群',
+      'CATEGORY_D': '4群',
+      'CATEGORY_E': '5群',
+      'CATEGORY_F': '6群',
+    };
+    return category ? labels[category] : '未定';
   };
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "CATEGORY_A":
-        return "bg-blue-100 text-blue-700";
-      case "CATEGORY_B":
-        return "bg-purple-100 text-purple-700";
-      case "CATEGORY_C":
-        return "bg-pink-100 text-pink-700";
-      case "CATEGORY_D":
-        return "bg-green-100 text-green-700";
-      case "CATEGORY_E":
-        return "bg-yellow-100 text-yellow-700";
-      case "CATEGORY_F":
-        return "bg-orange-100 text-orange-700";
-      default:
-        return "bg-gray-100 text-gray-700";
-    }
+  const getCategoryColor = (category: string | null) => {
+    const colors: Record<string, string> = {
+      'CATEGORY_A': 'bg-blue-100 text-blue-800',
+      'CATEGORY_B': 'bg-purple-100 text-purple-800',
+      'CATEGORY_C': 'bg-pink-100 text-pink-800',
+      'CATEGORY_D': 'bg-teal-100 text-teal-800',
+      'CATEGORY_E': 'bg-amber-100 text-amber-800',
+      'CATEGORY_F': 'bg-rose-100 text-rose-800',
+    };
+    return category ? colors[category] : 'bg-gray-100 text-gray-800';
   };
 
   const handleDelete = async (id: string) => {
@@ -100,13 +86,11 @@ export default function TrainingList({
                 )}
               </div>
               <div className="flex items-center gap-3 text-sm text-gray-600 flex-wrap">
-                <span
-                  className={`px-2 py-1 rounded-md font-medium ${getCategoryColor(training.category)}`}
-                >
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(training.category)}`}>
                   {getCategoryLabel(training.category)}
                 </span>
-                <span className="font-semibold text-primary-600">
-                  {training.points}pt
+                <span className="text-sm text-gray-500">
+                  {training.points ? `${training.points}pt` : '未定'}
                 </span>
                 <span>{format(new Date(training.date), "yyyy年M月d日")}</span>
               </div>
