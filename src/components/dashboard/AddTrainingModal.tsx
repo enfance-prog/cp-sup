@@ -91,8 +91,14 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
         isOnline: false,
       });
 
-    } catch (err: any) {
-      setError(err.message || '処理に失敗しました');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'object' && err !== null && 'message' in err) {
+        setError((err as { message: string }).message);
+      } else {
+        setError('処理に失敗しました');
+      }
     } finally {
       setLoading(false);
     }
