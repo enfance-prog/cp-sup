@@ -36,6 +36,12 @@ interface PlannedTraining {
   remindApplication: boolean;
   remindPayment: boolean;
   remindTraining: boolean;
+  transportationFee?: number | null;
+  welfareFee?: number | null;
+  entertainmentFee?: number | null;
+  advertisingFee?: number | null;
+  bookFee?: number | null;
+  expenseNote?: string | null;
 }
 
 interface Stats {
@@ -557,6 +563,13 @@ export default function DashboardPage() {
           points: registerSource.points || 1,
           date: new Date(registerSource.trainingDate),
           isOnline: registerSource.isOnline,
+          fee: registerSource.fee,
+          transportationFee: registerSource.transportationFee,
+          welfareFee: registerSource.welfareFee,
+          entertainmentFee: registerSource.entertainmentFee,
+          advertisingFee: registerSource.advertisingFee,
+          bookFee: registerSource.bookFee,
+          expenseNote: registerSource.expenseNote,
         } : undefined}
         plannedTrainingId={registerSource?.id}
       />

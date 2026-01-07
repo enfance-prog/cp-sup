@@ -18,6 +18,12 @@ interface PlannedTraining {
   remindApplication: boolean;
   remindPayment: boolean;
   remindTraining: boolean;
+  transportationFee?: number | null;
+  welfareFee?: number | null;
+  entertainmentFee?: number | null;
+  advertisingFee?: number | null;
+  bookFee?: number | null;
+  expenseNote?: string | null;
 }
 
 interface PlannedTrainingListProps {

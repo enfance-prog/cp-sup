@@ -104,13 +104,16 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
           </div>
           {/* カテゴリー */}
           <div>
-            <label className="form-label">カテゴリー（群） <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
+            <label className="form-label">
+              カテゴリー（群） <span className="text-red-500">*</span>
+            </label>
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | '' })}
               className="select-field"
+              required
             >
-              <option value="">未選択</option>
+              <option value="">選択してください</option>
               <option value="CATEGORY_A">1群</option>
               <option value="CATEGORY_B">2群</option>
               <option value="CATEGORY_C">3群</option>
@@ -121,7 +124,9 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
           </div>
           {/* ポイント */}
           <div>
-            <label className="form-label">取得ポイント <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
+            <label className="form-label">
+              取得ポイント <span className="text-red-500">*</span>
+            </label>
             <input
               type="number"
               min="1"
@@ -129,6 +134,7 @@ export default function EditTrainingModal({ isOpen, training, onClose, onSuccess
               value={formData.points}
               onChange={(e) => setFormData({ ...formData, points: e.target.value === '' ? '' : parseInt(e.target.value) })}
               className="input-field"
+              required
             />
           </div>
 

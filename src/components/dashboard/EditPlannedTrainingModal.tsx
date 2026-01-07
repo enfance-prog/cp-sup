@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaTimes, FaSave, FaWifi, FaCalendarAlt, FaYenSign } from 'react-icons/fa';
+import { FaTimes, FaSave, FaWifi, FaCalendarAlt, FaYenSign, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { ja } from 'date-fns/locale/ja';
 import { format } from 'date-fns';
@@ -17,6 +17,12 @@ interface PlannedTraining {
   paymentDeadline: string | null;
   trainingDate: string;
   fee: number | null;
+  transportationFee?: number | null;
+  welfareFee?: number | null;
+  entertainmentFee?: number | null;
+  advertisingFee?: number | null;
+  bookFee?: number | null;
+  expenseNote?: string | null;
   isOnline: boolean;
   memo: string | null;
   remindApplication: boolean;
@@ -45,6 +51,12 @@ export default function EditPlannedTrainingModal({
     paymentDeadline: '',
     trainingDate: '',
     fee: '',
+    transportationFee: '',
+    welfareFee: '',
+    entertainmentFee: '',
+    advertisingFee: '',
+    bookFee: '',
+    expenseNote: '',
     isOnline: false,
     memo: '',
     remindApplication: true,
@@ -52,6 +64,7 @@ export default function EditPlannedTrainingModal({
     remindTraining: true,
   });
   const [submitting, setSubmitting] = useState(false);
+  const [isExpenseOpen, setIsExpenseOpen] = useState(false);
 
   useEffect(() => {
     if (plannedTraining) {
@@ -68,6 +81,12 @@ export default function EditPlannedTrainingModal({
         paymentDeadline: formatDate(plannedTraining.paymentDeadline),
         trainingDate: formatDate(plannedTraining.trainingDate),
         fee: plannedTraining.fee?.toString() || '',
+        transportationFee: plannedTraining.transportationFee?.toString() || '',
+        welfareFee: plannedTraining.welfareFee?.toString() || '',
+        entertainmentFee: plannedTraining.entertainmentFee?.toString() || '',
+        advertisingFee: plannedTraining.advertisingFee?.toString() || '',
+        bookFee: plannedTraining.bookFee?.toString() || '',
+        expenseNote: plannedTraining.expenseNote || '',
         isOnline: plannedTraining.isOnline,
         memo: plannedTraining.memo || '',
         remindApplication: plannedTraining.remindApplication,
@@ -229,19 +248,112 @@ export default function EditPlannedTrainingModal({
             </div>
           </div>
 
-          {/* 研修費 */}
-          <div>
-            <label className="form-label flex items-center gap-2">
-              <FaYenSign className="text-primary-600" />
-              研修費（円）
-            </label>
-            <input
-              type="number"
-              min="0"
-              value={formData.fee}
-              onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
-              className="input-field"
-            />
+          {/* 経費・備考セクション */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <button
+              type="button"
+              onClick={() => setIsExpenseOpen(!isExpenseOpen)}
+              className="flex items-center justify-between w-full text-gray-700 font-semibold mb-2 hover:text-gray-900 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <FaYenSign />
+                <span>経費・メモ</span>
+              </div>
+              {isExpenseOpen ? (
+                <FaChevronUp className="text-sm" />
+              ) : (
+                <FaChevronDown className="text-sm" />
+              )}
+            </button>
+
+            {isExpenseOpen && (
+              <div className="space-y-4 mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      研修費<span className="text-[10px] text-gray-500">（参加・受講）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.fee}
+                      onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      旅費交通費<span className="text-[10px] text-gray-500">（交通・宿泊）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.transportationFee}
+                      onChange={(e) => setFormData({ ...formData, transportationFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      交際費<span className="text-[10px] text-gray-500">（打合・贈答）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.entertainmentFee}
+                      onChange={(e) => setFormData({ ...formData, entertainmentFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      広告宣伝費<span className="text-[10px] text-gray-500">（名刺・広告）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.advertisingFee}
+                      onChange={(e) => setFormData({ ...formData, advertisingFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      新聞図書費<span className="text-[10px] text-gray-500">（書籍購入）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.bookFee}
+                      onChange={(e) => setFormData({ ...formData, bookFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="form-label text-xs">経費ノート（備考）</label>
+                  <textarea
+                    value={formData.expenseNote}
+                    onChange={(e) => setFormData({ ...formData, expenseNote: e.target.value })}
+                    className="textarea-field text-sm"
+                    rows={2}
+                    placeholder="経費に関するメモ"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* オンライン研修 */}

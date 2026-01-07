@@ -61,6 +61,15 @@ model TrainingAttendance {
   training        Training      @relation(fields: [trainingId], references: [id])
   user            User          @relation(fields: [userId], references: [id])
 
+  // 経費情報
+  fee              Int?      // 研修費
+  transportationFee Int?     // 旅費交通費
+  welfareFee       Int?      // 福利厚生費
+  entertainmentFee Int?      // 交際費
+  advertisingFee   Int?      // 広告宣伝費
+  bookFee          Int?      // 新聞図書費
+  expenseNote      String?   // 経費ノート
+
   @@unique([userId, trainingId])
   @@map("training_attendances")
 }
@@ -79,9 +88,18 @@ model PlannedTraining {
   paymentDeadline     DateTime? // 支払期日
   trainingDate        DateTime  // 研修日（必須）
   fee                 Int?      // 研修費（円）
+  
+  // 経費情報（追加）
+  transportationFee Int?     // 旅費交通費
+  welfareFee       Int?      // 福利厚生費
+  entertainmentFee Int?      // 交際費
+  advertisingFee   Int?      // 広告宣伝費
+  bookFee          Int?      // 新聞図書費
+  expenseNote      String?   // 経費ノート
+
   isOnline            Boolean   @default(false)
   memo                String?   // 備考
-
+  
   // リマインダー設定
   remindApplication   Boolean   @default(true)
   remindPayment       Boolean   @default(true)

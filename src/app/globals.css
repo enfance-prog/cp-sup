@@ -7,10 +7,14 @@
 
 @layer base {
     :root {
-        --background: #FEFDF9;
-        --foreground: #4A4238;
-        --primary: #5F6F65;
-        --border: #E5DACD;
+        --background: #FFFFFF;
+        /* base.white */
+        --foreground: #000000;
+        /* text.main */
+        --primary: #40b1bd;
+        /* primary.500 */
+        --border: #E4E4E7;
+        /* base.200 */
     }
 
     * {
@@ -54,7 +58,11 @@
 
     /* Card Style - Elegant & Clean */
     .tool-card {
-        @apply glass-panel;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        box-shadow: 0 8px 32px 0 rgba(74, 66, 56, 0.05);
         border-radius: 12px;
         padding: 2rem;
         transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -72,8 +80,8 @@
 
     /* Buttons - Clean & Pill-shaped */
     .btn-primary {
-        background: #5F6F65;
-        color: #F7F4F0;
+        background: #40b1bd;
+        color: #FFFFFF;
         padding: 0.8rem 2rem;
         border-radius: 9999px;
         /* Pill shape */
@@ -84,15 +92,15 @@
     }
 
     .btn-primary:hover {
-        background: #4C5951;
+        background: #2d8a94;
         transform: translateY(-2px);
         box-shadow: 8px 20px rgba(95, 111, 101, 0.3);
     }
 
     .btn-secondary {
         background: #FFFFFF;
-        color: #5F6F65;
-        border: 1px solid #9CA778;
+        color: #40b1bd;
+        border: 1px solid #40b1bd;
         padding: 0.8rem 2rem;
         border-radius: 9999px;
         font-weight: 500;
@@ -101,9 +109,9 @@
     }
 
     .btn-secondary:hover {
-        background: #F4F6F4;
-        color: #4C5951;
-        border-color: #5F6F65;
+        background: #F2FBF7;
+        color: #2d8a94;
+        border-color: #40b1bd;
     }
 
     .btn-outline {
@@ -117,7 +125,8 @@
     }
 
     .btn-outline:hover {
-        background: rgba(95, 111, 101, 0.05);
+        background: rgba(74, 183, 157, 0.05);
+        /* Soft mint tint */
     }
 
     /* Input Fields */
@@ -134,8 +143,27 @@
 
     .input-field:focus {
         outline: none;
-        border-color: #5F6F65;
-        box-shadow: 0 0 0 3px rgba(95, 111, 101, 0.1);
+        border-color: #40b1bd;
+        box-shadow: 0 0 0 3px rgba(64, 177, 189, 0.1);
+        background: #FFFFFF;
+    }
+
+    .textarea-field {
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        border: 1px solid #D8C3A5;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.8);
+        transition: all 0.3s ease;
+        font-family: "Zen Kaku Gothic New", sans-serif;
+        color: #4A4238;
+        resize: vertical;
+    }
+
+    .textarea-field:focus {
+        outline: none;
+        border-color: #40b1bd;
+        box-shadow: 0 0 0 3px rgba(64, 177, 189, 0.1);
         background: #FFFFFF;
     }
 
@@ -178,7 +206,7 @@
 
     .react-datepicker__day--selected,
     .react-datepicker__day--keyboard-selected {
-        background-color: #5F6F65 !important;
+        background-color: #40b1bd !important;
         color: #fff !important;
         border-radius: 50% !important;
     }
@@ -190,8 +218,43 @@
 
     /* Text Select */
     ::selection {
-        background: #D2DCA6;
-        /* Soft matcha highlight */
-        color: #262D29;
+        background: #BFE6EB;
+        /* Fresh Mint highlight */
+        color: #1F5448;
+    }
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #print-area,
+    #print-area * {
+        visibility: visible;
+    }
+
+    #print-area {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 20px;
+        background: white;
+        z-index: 9999;
+        page-break-inside: avoid;
+    }
+
+    /* Remove browser default headers/footers if possible (browser dependent) */
+    @page {
+        margin: 0;
+        size: A4;
+    }
+
+    /* ページ分割を防ぐ */
+    #print-area > * {
+        page-break-inside: avoid;
     }
 }

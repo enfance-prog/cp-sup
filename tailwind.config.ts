@@ -10,47 +10,56 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // Cafe & Salon Palette
+        // Reference Design Palette (MINT DENTAL Style - Clean, Teal, Soft Gray)
         primary: {
-          50: '#F4F6F4',
-          100: '#E6EAE7',
-          200: '#CAD4CD',
-          300: '#AEBDB4',
-          400: '#91A79B',
-          500: '#5F6F65', // Main Sage
-          600: '#4C5951',
-          700: '#39433D',
-          800: '#262D29',
-          900: '#131614',
+          50: '#F0F9FA',
+          100: '#E0F4F6',
+          200: '#BFE6EB',
+          300: '#9DD7DE',
+          400: '#7CC8D1',
+          500: '#40B1BD', // Reference Main Teal
+          600: '#338E97',
+          700: '#266A71',
+          800: '#19474C',
+          900: '#0D2326',
         },
+        // Secondary / Background Accents
         secondary: {
-          50: '#FBFBF6',
-          100: '#F5F6EB',
-          200: '#EBEED5',
-          300: '#DFE5BD',
-          400: '#D2DCA6',
-          500: '#9CA778', // Matcha/Olive
-          600: '#7D8660',
-          700: '#5E6448',
-          800: '#3E4330',
-          900: '#1F2118',
+          50: '#F8FBFB', // Very subtle cool white
+          100: '#F1F8F9', // Reference Light Mint Gray (Section bg)
+          200: '#E2EEF0',
+          300: '#D4E4E7',
+          400: '#C5DADD',
+          500: '#A6C2C6',
+          600: '#8DA6AA',
+          700: '#738A8D',
+          800: '#5A6E71',
+          900: '#405255',
         },
+        // Accent Colors (Sky/Blue - kept for certain highlights if needed)
         accent: {
-          50: '#FCFBF9',
-          100: '#F7F4F0',
-          200: '#EEE7DF',
-          300: '#E5DACD',
-          400: '#DCCDBD',
-          500: '#D8C3A5', // Sand/Beige
-          600: '#AD9C84',
-          700: '#827563',
-          800: '#564E42',
-          900: '#2B2721',
+          50: '#F0F9FF',
+          100: '#E0F2FE',
+          200: '#BAE6FD',
+          300: '#7DD3FC',
+          400: '#38BDF8',
+          500: '#0EA5E9',
+          600: '#0284C7',
+          700: '#0369A1',
+          800: '#075985',
+          900: '#0C4A6E',
+        },
+        // Clean White Base
+        base: {
+          white: '#FFFFFF',
+          50: '#FAFAFA',
+          100: '#F4F4F5',
+          200: '#E4E4E7',
         },
         text: {
-          main: '#4A4238', // Warm Charcoal
-          muted: '#8C857B',
-          light: '#D4D0C7',
+          main: '#000000', // Reference Black (High Contrast)
+          muted: '#666666', // Standard muted
+          light: '#D1D5DB',
         }
       },
       fontFamily: {

@@ -62,6 +62,16 @@ export async function PUT(
     const body = await request.json();
     const { name, category, points, date, isOnline } = body;
 
+    // バリデーション
+    if (!name || !date) {
+      return NextResponse.json({ error: '研修名と受講日は必須です' }, { status: 400 });
+    }
+
+    // 群とポイントのバリデーション（研修登録では必須）
+    if (!category || !points) {
+      return NextResponse.json({ error: '群とポイントは必須です' }, { status: 400 });
+    }
+
     // ユーザーを取得
     const user = await prisma.user.findUnique({
       where: { clerkId: userId },

@@ -1,7 +1,9 @@
 "use client";
 
-import { FaWifi, FaTrash, FaEdit } from "react-icons/fa";
+import { FaWifi, FaTrash, FaEdit, FaPrint } from "react-icons/fa";
 import { format } from "date-fns";
+import { useState } from "react";
+import ExpenseReport from "./ExpenseReport";
 
 interface Training {
   id: string;
@@ -10,6 +12,13 @@ interface Training {
   points: number | null;
   date: string;
   isOnline: boolean;
+  fee?: number | null;
+  transportationFee?: number | null;
+  welfareFee?: number | null;
+  entertainmentFee?: number | null;
+  advertisingFee?: number | null;
+  bookFee?: number | null;
+  expenseNote?: string | null;
 }
 
 interface TrainingListProps {
@@ -65,8 +74,22 @@ export default function TrainingList({
     }
   };
 
+  const handlePrint = (training: Training) => {
+    setSelectedPrint(training);
+    setTimeout(() => {
+      window.print();
+    }, 100);
+  };
+
+  const [selectedPrint, setSelectedPrint] = useState<Training | null>(null);
+
   return (
     <div className="space-y-3">
+      {/* 印刷用レポート (隠し) */}
+      <div className="hidden print:block fixed inset-0 bg-white z-[9999] p-0 m-0">
+        {selectedPrint && <ExpenseReport training={selectedPrint} />}
+      </div>
+
       {trainings.map((training) => (
         <div
           key={training.id}
@@ -111,6 +134,13 @@ export default function TrainingList({
                 title="削除"
               >
                 <FaTrash className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => handlePrint(training)}
+                className="text-gray-400 hover:text-gray-700 transition-colors p-2 rounded-lg hover:bg-gray-100"
+                title="経費ノートを印刷"
+              >
+                <FaPrint className="w-4 h-4" />
               </button>
             </div>
           </div>

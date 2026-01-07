@@ -53,6 +53,14 @@ export async function GET() {
       points: attendance.training.points,
       date: attendance.training.date.toISOString(),
       isOnline: attendance.training.isOnline,
+      // 経費情報（TrainingAttendanceから取得）
+      fee: attendance.fee,
+      transportationFee: attendance.transportationFee,
+      welfareFee: attendance.welfareFee,
+      entertainmentFee: attendance.entertainmentFee,
+      advertisingFee: attendance.advertisingFee,
+      bookFee: attendance.bookFee,
+      expenseNote: attendance.expenseNote,
     }));
 
     return NextResponse.json(formattedTrainings);
@@ -75,7 +83,12 @@ export async function POST(request: NextRequest) {
 
     // バリデーション
     if (!name || !date) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+      return NextResponse.json({ error: '研修名と受講日は必須です' }, { status: 400 });
+    }
+
+    // 群とポイントのバリデーション（研修登録では必須）
+    if (!category || !points) {
+      return NextResponse.json({ error: '群とポイントは必須です' }, { status: 400 });
     }
 
     // ユーザーを取得または作成
@@ -125,12 +138,29 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    const {
+      fee,
+      transportationFee,
+      welfareFee,
+      entertainmentFee,
+      advertisingFee,
+      bookFee,
+      expenseNote
+    } = body;
+
     // 研修出席記録を作成
     await prisma.trainingAttendance.create({
       data: {
         userId: user.id,
         certificationId: certification.id,
         trainingId: training.id,
+        fee: fee ? parseInt(fee) : null,
+        transportationFee: transportationFee ? parseInt(transportationFee) : null,
+        welfareFee: welfareFee ? parseInt(welfareFee) : null,
+        entertainmentFee: entertainmentFee ? parseInt(entertainmentFee) : null,
+        advertisingFee: advertisingFee ? parseInt(advertisingFee) : null,
+        bookFee: bookFee ? parseInt(bookFee) : null,
+        expenseNote: expenseNote || null,
       },
     });
 

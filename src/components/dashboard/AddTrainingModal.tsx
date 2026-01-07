@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaTimes, FaWifi, FaCheck } from 'react-icons/fa';
+import { FaTimes, FaWifi, FaCheck, FaYenSign, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import { ja } from 'date-fns/locale/ja';
 
@@ -22,6 +22,13 @@ interface AddTrainingModalProps {
     points: number | null;
     date: Date;
     isOnline: boolean;
+    fee?: number | null;
+    transportationFee?: number | null;
+    welfareFee?: number | null;
+    entertainmentFee?: number | null;
+    advertisingFee?: number | null;
+    bookFee?: number | null;
+    expenseNote?: string | null;
   };
   plannedTrainingId?: string;
 }
@@ -33,9 +40,17 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
     points: 1 as number | '',
     date: new Date(),
     isOnline: false,
+    fee: '',
+    transportationFee: '',
+    welfareFee: '',
+    entertainmentFee: '',
+    advertisingFee: '',
+    bookFee: '',
+    expenseNote: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isExpenseOpen, setIsExpenseOpen] = useState(false);
 
   // 初期値が変更されたら反映
   useEffect(() => {
@@ -46,6 +61,13 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
         points: initialData.points === null ? '' : initialData.points,
         date: initialData.date,
         isOnline: initialData.isOnline,
+        fee: initialData.fee?.toString() || '',
+        transportationFee: initialData.transportationFee?.toString() || '',
+        welfareFee: initialData.welfareFee?.toString() || '',
+        entertainmentFee: initialData.entertainmentFee?.toString() || '',
+        advertisingFee: initialData.advertisingFee?.toString() || '',
+        bookFee: initialData.bookFee?.toString() || '',
+        expenseNote: initialData.expenseNote || '',
       });
     } else if (isOpen && !initialData) {
       // 通常のオープンの場合はリセット
@@ -55,6 +77,13 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
         points: 1,
         date: new Date(),
         isOnline: false,
+        fee: '',
+        transportationFee: '',
+        welfareFee: '',
+        entertainmentFee: '',
+        advertisingFee: '',
+        bookFee: '',
+        expenseNote: '',
       });
     }
   }, [initialData, isOpen]);
@@ -68,10 +97,24 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
 
     try {
       // 1. 研修実績の登録
+      const payload = {
+        name: formData.name,
+        category: formData.category || null,
+        points: formData.points === '' ? null : formData.points,
+        date: formData.date.toISOString().split('T')[0],
+        isOnline: formData.isOnline,
+        fee: formData.fee || '',
+        transportationFee: formData.transportationFee || '',
+        welfareFee: formData.welfareFee || '',
+        entertainmentFee: formData.entertainmentFee || '',
+        advertisingFee: formData.advertisingFee || '',
+        bookFee: formData.bookFee || '',
+        expenseNote: formData.expenseNote || '',
+      };
       const response = await fetch('/api/trainings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -98,6 +141,13 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
         points: 1,
         date: new Date(),
         isOnline: false,
+        fee: '',
+        transportationFee: '',
+        welfareFee: '',
+        entertainmentFee: '',
+        advertisingFee: '',
+        bookFee: '',
+        expenseNote: '',
       });
 
     } catch (err: unknown) {
@@ -150,13 +200,16 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
 
           {/* カテゴリー */}
           <div>
-            <label className="form-label">カテゴリー（群） <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
+            <label className="form-label">
+              カテゴリー（群） <span className="text-red-500">*</span>
+            </label>
             <select
               value={formData.category}
               onChange={(e) => setFormData({ ...formData, category: e.target.value as 'CATEGORY_A' | 'CATEGORY_B' | 'CATEGORY_C' | 'CATEGORY_D' | 'CATEGORY_E' | 'CATEGORY_F' | '' })}
               className="select-field"
+              required
             >
-              <option value="">未選択</option>
+              <option value="">選択してください</option>
               <option value="CATEGORY_A">1群</option>
               <option value="CATEGORY_B">2群</option>
               <option value="CATEGORY_C">3群</option>
@@ -168,7 +221,9 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
 
           {/* ポイント */}
           <div>
-            <label className="form-label">取得ポイント <span className="text-xs text-gray-500 font-normal">（任意）</span></label>
+            <label className="form-label">
+              取得ポイント <span className="text-red-500">*</span>
+            </label>
             <input
               type="number"
               min="1"
@@ -176,6 +231,7 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
               value={formData.points}
               onChange={(e) => setFormData({ ...formData, points: e.target.value === '' ? '' : parseInt(e.target.value) })}
               className="input-field"
+              required
             />
           </div>
 
@@ -192,6 +248,120 @@ export default function AddTrainingModal({ isOpen, onClose, onSuccess, initialDa
                 required
               />
             </div>
+          </div>
+
+          {/* 経費・備考セクション */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <button
+              type="button"
+              onClick={() => setIsExpenseOpen(!isExpenseOpen)}
+              className="flex items-center justify-between w-full text-gray-700 font-semibold mb-2 hover:text-gray-900 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <FaYenSign />
+                <span>経費・メモ</span>
+              </div>
+              {isExpenseOpen ? (
+                <FaChevronUp className="text-sm" />
+              ) : (
+                <FaChevronDown className="text-sm" />
+              )}
+            </button>
+
+            {isExpenseOpen && (
+              <div className="space-y-4 mt-4">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* 研修費 */}
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      研修費<span className="text-[10px] text-gray-500">（参加・受講）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.fee}
+                      onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                  {/* 旅費交通費 */}
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      旅費交通費<span className="text-[10px] text-gray-500">（交通・宿泊）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.transportationFee}
+                      onChange={(e) => setFormData({ ...formData, transportationFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* 交際費 */}
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      交際費<span className="text-[10px] text-gray-500">（打合・贈答）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.entertainmentFee}
+                      onChange={(e) => setFormData({ ...formData, entertainmentFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                  {/* 広告宣伝費 */}
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      広告宣伝費<span className="text-[10px] text-gray-500">（名刺・広告）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.advertisingFee}
+                      onChange={(e) => setFormData({ ...formData, advertisingFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  {/* 新聞図書費 */}
+                  <div>
+                    <label className="form-label text-xs leading-tight">
+                      新聞図書費<span className="text-[10px] text-gray-500">（書籍購入）</span>
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={formData.bookFee}
+                      onChange={(e) => setFormData({ ...formData, bookFee: e.target.value })}
+                      className="input-field text-sm"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                {/* 経費ノート（備考） */}
+                <div>
+                  <label className="form-label text-xs">経費ノート（備考）</label>
+                  <textarea
+                    value={formData.expenseNote}
+                    onChange={(e) => setFormData({ ...formData, expenseNote: e.target.value })}
+                    className="textarea-field text-sm"
+                    rows={2}
+                    placeholder="経費に関するメモ、勘定科目の詳細など"
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* オンライン研修チェックボックス */}

@@ -24,7 +24,7 @@ export default function WelcomePage() {
           <div className="flex gap-4 items-center">
             <Link
               href="/sign-in"
-              className="btn-outline hidden sm:inline-block text-sm"
+              className="btn-outline text-sm"
             >
               ログイン
             </Link>
@@ -231,7 +231,7 @@ export default function WelcomePage() {
               © 2025 enfance / Clinical Psychologist Support
             </p>
             <div className="flex gap-6 text-sm text-secondary-400">
-              <Link href="#" className="hover:text-secondary-200 transition-colors">プライバシーポリシー</Link>
+              <Link href="/privacy-policy" className="hover:text-secondary-200 transition-colors">プライバシーポリシー</Link>
               <Link href="#" className="hover:text-secondary-200 transition-colors">利用規約</Link>
             </div>
           </div>
