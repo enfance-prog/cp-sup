@@ -33,12 +33,12 @@ export default async function PrivacyPolicyPage() {
                         <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
                             components={{
-                                h1: ({ node, ...props }) => <h1 className="text-3xl font-bold mb-8 border-b pb-4 border-secondary-200" {...props} />,
-                                h2: ({ node, ...props }) => <h2 className="text-2xl font-bold mt-12 mb-6" {...props} />,
-                                h3: ({ node, ...props }) => <h3 className="text-xl font-bold mt-8 mb-4" {...props} />,
-                                p: ({ node, ...props }) => <p className="leading-relaxed mb-6" {...props} />,
-                                ul: ({ node, ...props }) => <ul className="list-disc pl-6 mb-6 space-y-2" {...props} />,
-                                li: ({ node, ...props }) => <li className="" {...props} />,
+                                h1: ({ ...props }) => <h1 className="text-3xl font-bold mb-8 border-b pb-4 border-secondary-200" {...props} />,
+                                h2: ({ ...props }) => <h2 className="text-2xl font-bold mt-12 mb-6" {...props} />,
+                                h3: ({ ...props }) => <h3 className="text-xl font-bold mt-8 mb-4" {...props} />,
+                                p: ({ ...props }) => <p className="leading-relaxed mb-6" {...props} />,
+                                ul: ({ ...props }) => <ul className="list-disc pl-6 mb-6 space-y-2" {...props} />,
+                                li: ({ ...props }) => <li className="" {...props} />,
                             }}
                         >
                             {content}
