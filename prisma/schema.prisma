@@ -18,8 +18,21 @@ model User {
   trainings        TrainingAttendance[]
   plannedTrainings PlannedTraining[]
   googleToken      GoogleToken?
+  notifications    Notification[]
 
   @@map("users")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
 }
 
 model Certification {

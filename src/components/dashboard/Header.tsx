@@ -12,6 +12,9 @@ interface HeaderProps {
 export default function Header({ setSidebarOpen }: HeaderProps) {
   const { user } = useUser();
   const [displayName, setDisplayName] = useState('');
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const fetchUserName = useCallback(async () => {
     try {
@@ -39,9 +42,43 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
     }
   }, [user]);
 
+  const fetchNotifications = useCallback(async () => {
+    try {
+      const response = await fetch('/api/notifications');
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setNotifications(data);
+          setUnreadCount(data.filter((n: any) => !n.isRead).length);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    }
+  }, []);
+
+  const markAsRead = async () => {
+    const unreadIds = notifications.filter(n => !n.isRead).map(n => n.id);
+    if (unreadIds.length === 0) return;
+
+    try {
+      await fetch('/api/notifications', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ notificationIds: unreadIds }),
+      });
+      // ローカルの状態を更新
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
+      setUnreadCount(0);
+    } catch (error) {
+      console.error('Failed to mark notifications as read:', error);
+    }
+  };
+
   useEffect(() => {
     fetchUserName();
-  }, [fetchUserName]);
+    fetchNotifications();
+  }, [fetchUserName, fetchNotifications]);
 
   // プロフィール更新イベントをリスン
   useEffect(() => {
@@ -68,13 +105,62 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
         {/* 右側のアイコン */}
         <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
           {/* 通知ボタン */}
-          <button
-            type="button"
-            className="rounded-full bg-white/50 p-2 text-gray-400 hover:text-gray-500 hover:bg-white/80 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500"
-          >
-            <span className="sr-only">通知を見る</span>
-            <FaBell className="h-5 w-5" />
-          </button>
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                setShowNotifications(!showNotifications);
+                if (!showNotifications && unreadCount > 0) {
+                  markAsRead();
+                }
+              }}
+              className="rounded-full bg-white/50 p-2 text-gray-400 hover:text-gray-500 hover:bg-white/80 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500 relative"
+            >
+              <span className="sr-only">通知を見る</span>
+              <FaBell className="h-5 w-5" />
+              {unreadCount > 0 && (
+                <span className="absolute top-0 right-0 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white" />
+              )}
+            </button>
+
+            {/* 通知ポップオーバー */}
+            {showNotifications && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowNotifications(false)}
+                />
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 z-20 overflow-hidden">
+                  <div className="p-3 border-b border-gray-100 bg-gray-50">
+                    <h3 className="text-sm font-semibold text-gray-700">お知らせ</h3>
+                  </div>
+                  <div className="max-h-96 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-4 text-center text-gray-500 text-sm">
+                        通知はありません
+                      </div>
+                    ) : (
+                      <ul className="divide-y divide-gray-100">
+                        {notifications.slice(0, 5).map((notification) => (
+                          <li key={notification.id} className={`p-4 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-blue-50/50' : ''}`}>
+                            <p className="text-sm font-medium text-gray-900 mb-1">
+                              {notification.title}
+                            </p>
+                            <p className="text-sm text-gray-600 mb-2 whitespace-pre-wrap">
+                              {notification.message}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {new Date(notification.createdAt).toLocaleDateString()} {new Date(notification.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </p>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* ユーザープロフィール - クリックでサイドバー開く */}
           <button
