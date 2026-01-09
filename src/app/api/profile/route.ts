@@ -7,7 +7,7 @@ export async function GET() {
   try {
     // auth() を正しく呼び出す
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -34,7 +34,7 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json({ 
+      return NextResponse.json({
         name: '',
         email: clerkUser?.primaryEmailAddress?.emailAddress || '',
         certification: null,
@@ -58,7 +58,7 @@ export async function PUT(request: NextRequest) {
   try {
     // auth() を正しく呼び出す
     const { userId } = await auth();
-    
+
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -106,6 +106,24 @@ export async function PUT(request: NextRequest) {
     const existingCert = await prisma.certification.findFirst({
       where: { userId: user.id },
     });
+
+    // 重複チェック: 他のユーザーが同じ番号を使っていないか確認
+    const duplicateCert = await prisma.certification.findFirst({
+      where: {
+        certNumber,
+        userId: { not: user.id }, // 自分以外のユーザー
+      },
+    });
+
+    if (duplicateCert) {
+      return NextResponse.json(
+        {
+          error: 'Certification number already exists',
+          code: 'CERT_NUMBER_EXISTS'
+        },
+        { status: 409 }
+      );
+    }
 
     if (existingCert) {
       // 資格情報を更新
