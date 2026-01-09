@@ -9,10 +9,18 @@ interface HeaderProps {
   setSidebarOpen: (isOpen: boolean) => void;
 }
 
+interface Notification {
+  id: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
 export default function Header({ setSidebarOpen }: HeaderProps) {
   const { user } = useUser();
   const [displayName, setDisplayName] = useState('');
-  const [notifications, setNotifications] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -49,7 +57,7 @@ export default function Header({ setSidebarOpen }: HeaderProps) {
         const data = await response.json();
         if (Array.isArray(data)) {
           setNotifications(data);
-          setUnreadCount(data.filter((n: any) => !n.isRead).length);
+          setUnreadCount(data.filter((n: Notification) => !n.isRead).length);
         }
       }
     } catch (error) {
